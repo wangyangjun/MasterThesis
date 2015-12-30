@@ -1,0 +1,259 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                %%
+%% An example for writting your thesis using LaTeX                %%
+%% Original version by Luis Costa,  changes by Perttu Puska       %%
+%% Support for Swedish added 15092014                             %%
+%%                                                                %%
+%% This example consists of the files                             %%
+%%         thesistemplate.tex (versio 2.01)                       %%
+%%         opinnaytepohja.tex (versio 2.01) (for text in Finnish) %%
+%%         aaltothesis.cls (versio 2.01)                          %%
+%%         kuva1.eps                                              %%
+%%         kuva2.eps                                              %%
+%%         kuva1.pdf                                              %%
+%%         kuva2.pdf                                              %%
+%%                                                                %%
+%%                                                                %%
+%% Typeset either with                                            %%
+%% latex:                                                         %%
+%%             $ latex opinnaytepohja                             %%
+%%             $ latex opinnaytepohja                             %%
+%%                                                                %%
+%%   Result is the file opinnayte.dvi, which                      %%
+%%   is converted to ps format as follows:                        %%
+%%                                                                %%
+%%             $ dvips opinnaytepohja -o                          %%
+%%                                                                %%
+%%   and then to pdf as follows:                                  %%
+%%                                                                %%
+%%             $ ps2pdf opinnaytepohja.ps                         %%
+%%                                                                %%
+%% Or                                                             %%
+%% pdflatex:                                                      %%
+%%             $ pdflatex opinnaytepohja                          %%
+%%             $ pdflatex opinnaytepohja                          %%
+%%                                                                %%
+%%   Result is the file opinnaytepohja.pdf                        %%
+%%                                                                %%
+%% Explanatory comments in this example begin with                %%
+%% the characters %%, and changes that the user can make          %%
+%% with the character %                                           %%
+%%                                                                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Uncomment one of these:
+%% the 1st when using pdflatex, which directly typesets your document in
+%% pdf (use jpg or pdf figures), or
+%% the 2nd when producing a ps file (use eps figures, don't use ps figures!).
+\documentclass[english,12pt,a4paper,pdftex,sci,utf8]{aaltothesis}
+%\documentclass[english,12pt,a4paper,dvips]{aaltothesis}
+
+%% To the \documentclass above
+%% specify your school: arts, biz, chem, elec, eng, sci
+%% specify the character encoding scheme used by your editor: utf8, latin1
+
+%% Use one of these if you write in Finnish (see the Finnish template):
+%%
+%\documentclass[finnish,12pt,a4paper,pdftex,elec,utf8]{aaltothesis}
+%\documentclass[finnish,12pt,a4paper,dvips]{aaltothesis}
+
+\usepackage{graphicx}
+
+%% Use this if you write hard core mathematics, these are usually needed
+\usepackage{amsfonts,amssymb,amsbsy}
+
+%% Use the macros in this package to change how the hyperref package below 
+%% typesets its hypertext -- hyperlink colour, font, etc. See the package
+%% documentation. It also defines the \url macro, so use the package when 
+%% not using the hyperref package.
+%%
+%\usepackage{url}
+
+%% Use this if you want to get links and nice output. Works well with pdflatex.
+\usepackage{hyperref}
+
+\usepackage{subfigure}
+
+\hypersetup{pdfpagemode=UseNone, pdfstartview=FitH,
+  colorlinks=true,urlcolor=red,linkcolor=blue,citecolor=black,
+  pdftitle={Default Title, Modify},pdfauthor={Yangjun Wang},
+  pdfkeywords={Modify keywords}}
+
+
+%% All that is printed on paper starts here
+\begin{document}
+
+%% Change the school field to specify your school if the automatically 
+%% set name is wrong
+% \university{aalto-yliopisto}
+% \university{aalto University}
+% \school{Sähkötekniikan korkeakoulu}
+% \school{School of Science}
+
+%% Only for B.Sc. thesis: Choose your degree programme. 
+%\degreeprogram{Electronics and electrical engineering}
+%%
+
+%% ONLY FOR M.Sc. AND LICENTIATE THESIS: Specify your department,
+%% professorship and professorship code. 
+%%
+\department{Department of Information and Computer Science}
+\professorship{Data Communication Software}
+%%
+
+%% Valitse yksi näistä kolmesta
+%%
+%% Choose one of these:
+%\univdegree{BSc}
+\univdegree{MSc}
+%\univdegree{Lic}
+
+%% Your own name (should be self explanatory...)
+\author{Yangjun Wang}
+
+%% Your thesis title comes here and again before a possible abstract in
+%% Finnish or Swedish . If the title is very long and latex does an
+%% unsatisfactory job of breaking the lines, you will have to force a
+%% linebreak with the \\ control character. 
+%% Do not hyphenate titles.
+%% 
+\thesistitle{Benchmark Stream Processing Systems}
+
+\place{Espoo}
+
+%% For B.Sc. thesis use the date when you present your thesis. 
+%% 
+%% Kandidaatintyön päivämäärä on sen esityspäivämäärä! 
+\date{28.12.2015}
+
+%% B.Sc. or M.Sc. thesis supervisor 
+%% Note the "\" after the comma. This forces the following space to be 
+%% a normal interword space, not the space that starts a new sentence. 
+%% This is done because the fullstop isn't the end of the sentence that
+%% should be followed by a slightly longer space but is to be followed
+%% by a regular space.
+%%
+\supervisor{Assoc. Prof.\ Aristides Gionis} %{Prof.\ Pirjo Professori}
+
+%% B.Sc. or M.Sc. thesis advisors(s). You can give upto two advisors in
+%% this template. Check with your supervisor how many official advisors
+%% you can have.
+%%
+%\advisor{Prof.\ Pirjo Professori}
+\advisor{D.Sc.\ Gianmarco De Francisci Morales}
+%\advisor{M.Sc.\ Polli Pohjaaja}
+
+%% Aalto logo: syntax:
+%% \uselogo{aaltoRed|aaltoBlue|aaltoYellow|aaltoGray|aaltoGrayScale}{?|!|''}
+%%
+%% Logo language is set to be the same as the document language.
+%% Logon kieli on sama kuin dokumentin kieli
+%%
+\uselogo{aaltoBlue}{''}
+
+%% Create the coverpage
+%%
+\makecoverpage
+
+
+%% Note that when writting your master's thesis in English, place
+%% the English abstract first followed by the possible Finnish abstract
+
+%% English abstract.
+%% All the information required in the abstract (your name, thesis title, etc.)
+%% is used as specified above.
+%% Specify keywords
+%%
+%% Kaikki tiivistelmässä tarvittava tieto (nimesi, työnnimi, jne.) käytetään
+%% niin kuin se on yllä määritelty.
+%% Avainsanat
+%%
+\keywords{Big Data, Stream, Benchmark, Storm, Flink, Spark}
+%% Abstract text
+\begin{abstractpage}[english]
+  Batch processing technologies(Such as MapReduce, Hive, Pig) have matured and been widely used in the industry. These systems solved the issue processing big volumes of data successfully. However, first big data need to be collected and stored in a database or file system. Then it takes time to finish batch processing analysis job before get any results. While there are many cases that need analysed results from streaming data immediately. The demand for processing real time stream data is increasing a lot these days. A big data architecture contains several parts. Often, masses of structured and semi-structured historical data are stored in Hadoop (Volume + Variety). On the other side, stream processing is used for fast data requirements (Velocity + Variety)\cite{GameChanger}. Several streaming processing systems are implemented and widely adopted, such as Apache Storm, JStorm, Apache Spark, IBM InfoSphere Streams and Apache Flink. They all support real-time stream processing, high scalability, and awesome monitoring. How to evaluate a real time stream processing system before choosing it to use in production development is a open question.  Before these real time stream processing systems are implemented, Michael demonstrated the 8 requirements\cite{8requirements} of real-time stream processing, which gives us a standard to evaluate whether a real time stream processing system satisfies these requirements.  A very common and traditional approach to verify whether the performance of a system meets the requirements is benchmarking. Published benchmarking results from industry standard benchmark systems could help users compare products and understand features of a system easily.  
+\end{abstractpage}
+
+%% Force a new page so that the possible English abstract starts on a new page
+%%
+%% Pakotetaan uusi sivu varmuuden vuoksi, jotta 
+%% mahdollinen suomenkielinen ja englanninkielinen tiivistelmä
+%% eivät tule vahingossakaan samalle sivulle
+\newpage
+%
+
+%% Preface
+%%
+%% Esipuhe 
+\mysection{Acknowledgements}
+%\mysection{Esipuhe}
+I want to thank ProfessorAristides Gionis
+and my advisor Gianmarco De Francisci Morales for their 
+good guidance.\\
+
+\vspace{5cm}
+Otaniemi, 16.1.2015
+
+\vspace{5mm}
+{\hfill Yangjun Wang \hspace{1cm}}
+
+%% Force new page after preface
+%%
+%% Pakotetaan varmuuden vuoksi esipuheen jälkeinen osa
+%% alkamaan uudelta sivulta
+\newpage
+
+
+%% Table of contents. 
+\thesistableofcontents
+
+
+%% Symbols and abbreviations
+%\input{abbreviations.tex}
+
+%% Tweaks the page numbering to meet the requirement of the thesis format:
+%% Begin the pagenumbering in Arabian numerals (and leave the first page
+%% of the text body empty, see \thispagestyle{empty} below).
+%% Additionally, force the actual text to begin on a new page with the 
+%% \clearpage command.
+%% \clearpage is similar to \newpage, but it also flushes the floats (figures
+%% and tables).
+%% There is no need to change these
+%%
+\cleardoublepage
+\storeinipagenumber
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\input{1introduction.tex}
+
+\input{2background.tex}
+
+\input{3platforms.tex}
+
+\input{4benchmark.tex}
+
+\input{5experiment.tex}
+ 
+\input{6conclusions.tex}
+
+\phantomsection
+\addcontentsline{toc}{section}{\refname}
+
+% Load the bibliographic references
+% ------------------------------------------------------------------
+% You can use several .bib files:
+% \bibliography{thesis_sources,ietf_sources}
+\bibliographystyle{IEEEtran}
+\bibliography{sources}
+\clearpage
+
+
+%% Appendices
+%% Liitteet
+\thesisappendix
+\input{appendices.tex}
+
+\end{document}
