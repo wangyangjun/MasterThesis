@@ -1,16 +1,28 @@
 \chapter{Introduction}
 \label{chapter:intro}
 
-Introduce big data and the four \textbf{\textit{V}}s of Big Data 
+Along with the rapid development of information technology, the speed of data generation increases dramatically. To process and analysis such large amount of data, the so-called Big Data,  cloud computing technologies get a quick development,  especially after these two papers related to MapReduce and BigTable published by Google  \cite{chang2006bigtable, dean2008mapreduce}.
 
-\section{Stream Processing Systems and Evaluation}
+\section{Stream Processing and Evaluation}
 \label{section:big_data_analytics}
+In theory, Big Data don't only mean "big" \textbf{v}olume. Besides volume, Big Data still have two other properties: \textbf{v}elocity and \textbf{v}ariety \cite{doug2001data}. Velocity means the amount of data is growing at high velocity. Variety refers to the various data formats.  They are called three \textbf{\textit{V}}s of Big Data.  When deal with Big Data, there are two types of processing model, batch processing and stream processing. A big data architecture contains several parts. For batch processing, masses of structured and semi-structured historical data are stored in HDFS (\textbf{V}olume + \textbf{V}ariety). On the other side, stream processing is used for fast data requirements (\textbf{V}elocity + \textbf{V}ariety)\cite{GameChanger}.
 
-Describe common stream processing systems and current evaluation and comparison these platforms. 
+Batch processing is generally more concerned with throughput than latency of individual components of the computation. In batch processing, data is collected and stored in file system. When the size of data reaches a tradeoff, batch jobs could be configured to run without manual intervention, trained against entire dataset at scale in order to produce output in the form of computational analyses and data files. Because of time consume in data collection and processing stage, depending on the size of the data being processed and the computational power of the system, output can be delayed significantly. Generally, latency could be range from minutes to hours.
+
+Streaming processing is required for many practical cases which need analysed results from streaming data in a very short latency. For example, a online shopping website would want give a customer accurate recommendations as soon as possible after he/she scan the website for a while.  Several streaming processing systems are implemented and widely adopted, such as Apache Storm, Apache Spark, IBM InfoSphere Streams and Apache Flink. They all support real-time stream processing, high scalability, and awesome monitoring. 
+
+How to evaluate a real time stream processing system before choosing it to use in production development is a open question.  Before these real time stream processing systems are implemented, Michael demonstrated the 8 requirements\cite{8requirements} of real-time stream processing, which gives us a standard to evaluate whether a real time stream processing system satisfies these requirements.  A very common and traditional approach to verify whether the performance of a system meets the requirements is benchmarking. Published benchmarking results from industry standard benchmark systems could help users compare products and understand features of a system easily. In this thesis, we introduce a benchmark framework called StreamBench to facilitate performance comparisons of stream processing systems. 
 
 \section{Structure of the Thesis}
 \label{section:structure} 
+The main topic of this thesis is stream processing systems benchmark. First, big data and cloud computing technology background is introduced in Chapter 2. Chapter 3 presents architecture and main features of three widely used stream processing systems. In Chapter 4, we demonstrate the design of our benchmark framework -- StreamBench, including the whole architecture, test data generator and extensibility of StreamBench. Experiments and results are discussed in Chapter 5. At last, conclusions are given in Chapter 6.
 
-Structure description of the thesis
+
+
+
+
+
+
+
 
 \clearpage

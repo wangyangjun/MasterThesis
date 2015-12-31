@@ -1,28 +1,29 @@
-\section{Background}
+\chapter{Background}
 Background knowledge of StreamBench which includes Big Data, Cloud Computing and widely accepted benchmark systems. 
 
-\subsection{Cloud Computing} 
+\section{Cloud Computing} 
 Concept of Cloud Computing and how Cloud Computing solves Big Data issues
 
-\subsubsection{Parallel Computing}
-\subsubsection{Computing Cluster}
-\subsubsection{Batch Processing and Stream Processing}
+\subsection{Parallel Computing}
+\subsection{Computing Cluster}
+\subsection{Batch Processing and Stream Processing}
 
-\subsection{Apache Hadoop}
+\section{Apache Hadoop}
 Introduce Apache Hadoop and several important modules
 
-\subsubsection{MapReduce}
-\subsubsection{Hadoop Distribution File Systems}
-\subsubsection{YARN}
-\subsubsection{Zookeeper}
+\subsection{MapReduce}
+\subsection{Hadoop Distribution File Systems}
+\subsection{YARN}
+\subsection{Zookeeper}
 
 
-\subsection{Benchmark}
+\section{Benchmark}
 Describe benchmark systems of traditional database and cloud service systems. 
 Demonstrate design and components of benchmark system
+Traditional database management systems were evaluated with industry standard benchmarks like TPC-C\cite{TPC-C}, TPC-H\cite{TPC-H}. These have focused on simulating complete business computing environment where plenty of users execute business oriented ad-hoc queries that involve transactions, big table scan, join and aggregation. The queries and the data populating the database have been chosen to have broad industry-wide relevance. This benchmark illustrates decision support systems that examine large volumes of data, execute queries with a high degree of complexity, and give answers to critical business questions\cite{TPC-H}. The integrity of the data is verified during the process of the execution of the benchmark to check whether the DBMS corrupt the data. If the data is corrupted, the benchmark measurement is rejected entirely\cite{dey2014ycsb+t}. Benchmark systems for DBMS mature, with data and workloads simulating real common business use cases, they could evaluate performance of DBMS very well. Some other works were done related to specific business model. Linkbench\cite{LinkBench} benchmarks database systems which store "social network" data specifically. The workload of database operations are based on Facebook's production workload and the data is also generated in such a way that key properties of the data match the production social graph data in Facebook.  
 
-\subsubsection{Traditional Database Benchmark}
-\subsubsection{Cloud Service Benchmark}
+\subsection{Traditional Database Benchmark}
+\subsection{Cloud Service Benchmark}
 
 
 \clearpage

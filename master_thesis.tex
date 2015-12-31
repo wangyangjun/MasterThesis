@@ -213,6 +213,10 @@
 \usepackage{appendix}
 %\usepackage{ftnxtra} %footnote in caption
 
+
+\usepackage[square,numbers]{natbib}
+
+
 \usetikzlibrary{positioning}
 \usetikzlibrary{calc}
 \usetikzlibrary{arrows}
@@ -310,7 +314,7 @@
 
 % Other stuff
 % ------------------------------------------------------------------
-\newcommand{\PROFESSORSHIP}{Data Communication Software}
+\newcommand{\PROFESSORSHIP}{Foundations of Advanced Computing}
 %\newcommand{\FPROFESSORSHIP}{Tietoliikenneohjelmistot}
 % Professorship code is the same in all languages
 \newcommand{\PROFCODE}{T-110}
@@ -361,10 +365,10 @@
 % Bibliography style
 % acm style gives you a basic reference style. It works only with numbered
 % references.
-\bibliographystyle{acm}
+% \bibliographystyle{acm}
 % Plainnat is a plain style that works with both numbered and name citations.
-% \bibliographystyle{plainnat}
-
+\bibliographystyle{plainnat}
+% \bibliographystyle{abbrvnat}
 
 % Extra hyphenation settings
 % ------------------------------------------------------------------
@@ -406,7 +410,11 @@
 % Abstract in English
 % ------------------------------------------------------------------
 \thesisabstract{english}{
-Batch processing technologies(Such as MapReduce, Hive, Pig) have matured and been widely used in the industry. These systems solved the issue processing big volumes of data successfully. However, first big data need to be collected and stored in a database or file system. Then it takes time to finish batch processing analysis job before get any results. While there are many cases that need analysed results from streaming data immediately. The demand for processing real time stream data is increasing a lot these days. A big data architecture contains several parts. Often, masses of structured and semi-structured historical data are stored in Hadoop (Volume + Variety). On the other side, stream processing is used for fast data requirements (Velocity + Variety)\cite{GameChanger}. Several streaming processing systems are implemented and widely adopted, such as Apache Storm, JStorm, Apache Spark, IBM InfoSphere Streams and Apache Flink. They all support real-time stream processing, high scalability, and awesome monitoring. How to evaluate a real time stream processing system before choosing it to use in production development is a open question.  Before these real time stream processing systems are implemented, Michael demonstrated the 8 requirements\cite{8requirements} of real-time stream processing, which gives us a standard to evaluate whether a real time stream processing system satisfies these requirements.  A very common and traditional approach to verify whether the performance of a system meets the requirements is benchmarking. Published benchmarking results from industry standard benchmark systems could help users compare products and understand features of a system easily.
+Batch processing technologies(Such as MapReduce, Hive, Pig) have matured and been widely used in the industry. These systems solved the issue processing big volumes of data successfully. However, first big data need to be collected and stored in a database or file system. Then it takes time to finish batch processing analysis job before get any results. While there are many cases that need analysed results from streaming data in seconds or sub-seconds. To satisfy the increasing demand of processing stream data, several streaming processing systems are implemented and widely adopted, such as Apache Storm,  Apache Spark, IBM InfoSphere Streams and Apache Flink. They all support online stream processing, high scalability, and tasks monitoring. While how to evaluate a stream processing system before choosing it to use in production development is a open question.  
+
+In this thesis, we introduce StreamBench, a benchmark framework to facilitate performance comparisons of stream processing systems. A common API component and a core set of workloads are defined. We implement the common API and run benchmarks for three widely used open source stream processing systems: Apache Storm, Spark Streaming and Flink Streaming. Therefore, a key feature of the StreamBench framework is that it is extensible -- it supports easy definition of new workloads, in addition to making it easy to benchmark new stream processing systems.
+
+
 %and benchmark on two of them, Hive and Spark, with BAM data to figure out if they achieved the goal of interactive processing.    
 
 }
@@ -424,7 +432,7 @@ Batch processing technologies(Such as MapReduce, Hive, Pig) have matured and bee
 % show up in the TOC
 \chapter*{Acknowledgements}
 
-I want to thank ProfessorAristides Gionis
+I want to thank Professor Aristides Gionis
 and my advisor Gianmarco De Francisci Morales for their 
 good guidance.\\
 
