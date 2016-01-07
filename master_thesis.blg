@@ -4,52 +4,94 @@ The top-level auxiliary file: master_thesis.aux
 The style file: plainnat.bst
 Database file #1: sources.bib
 Warning--entry type for "GameChanger" isn't style-file defined
---line 26 of file sources.bib
-Warning--entry type for "TPC-H" isn't style-file defined
---line 32 of file sources.bib
-Warning--entry type for "TPC-C" isn't style-file defined
 --line 37 of file sources.bib
+Warning--entry type for "HDFS" isn't style-file defined
+--line 69 of file sources.bib
+Warning--entry type for "MapReduce" isn't style-file defined
+--line 76 of file sources.bib
+Warning--entry type for "Kafka" isn't style-file defined
+--line 83 of file sources.bib
+Warning--entry type for "TPC-H" isn't style-file defined
+--line 90 of file sources.bib
+Warning--entry type for "TPC-C" isn't style-file defined
+--line 95 of file sources.bib
+Warning--entry type for "YSB" isn't style-file defined
+--line 136 of file sources.bib
+Warning--entry type for "xinhstechblog" isn't style-file defined
+--line 325 of file sources.bib
+Warning--entry type for "manoj-sotrm-vs-spark" isn't style-file defined
+--line 330 of file sources.bib
+Warning--entry type for "flink-latency" isn't style-file defined
+--line 336 of file sources.bib
+Warning--entry type for "samza-benchmark" isn't style-file defined
+--line 342 of file sources.bib
+Warning--to sort, need author or key in Giraph
+Warning--to sort, need author or key in xinhstechblog
+Warning--empty author in Giraph
+Warning--empty journal in Giraph
+Warning--empty year in Giraph
+Warning--empty year in Giraph
+Warning--empty year in xinhstechblog
+Warning--empty journal in capota2015graphalytics
+Warning--empty journal in cordovaanalysis
+Warning--empty year in cordovaanalysis
+Warning--empty year in cordovaanalysis
 Warning--empty year in TPC-C
 Warning--empty year in TPC-H
-You've used 9 entries,
+Warning--empty year in samza-benchmark
+Warning--empty year in HDFS
+Warning--empty year in Kafka
+Warning--empty year in MapReduce
+Warning--can't use both volume and number fields in ghemawat2003google
+Warning--can't use both volume and number fields in PowerGraph
+Warning--empty journal in guo2014well
+Warning--empty journal in guo2014benchmarking
+Warning--empty journal in iosup2014towards
+Warning--empty year in flink-latency
+Warning--empty journal in Pregel
+Warning--empty journal in mell2011nist
+Warning--empty year in manoj-sotrm-vs-spark
+Warning--empty year in pokludabenchmarking
+Warning--empty year in YSB
+You've used 36 entries,
             2773 wiz_defined-function locations,
-            650 strings with 6440 characters,
-and the built_in function-call counts, 4537 in all, are:
-= -- 413
-> -- 253
-< -- 8
-+ -- 88
-- -- 78
-* -- 346
-:= -- 671
-add.period$ -- 31
-call.type$ -- 9
-change.case$ -- 53
-chr.to.int$ -- 8
-cite$ -- 20
-duplicate$ -- 202
-empty$ -- 371
-format.name$ -- 89
-if$ -- 974
-int.to.chr$ -- 2
+            798 strings with 11577 characters,
+and the built_in function-call counts, 17609 in all, are:
+= -- 1566
+> -- 1064
+< -- 30
++ -- 370
+- -- 330
+* -- 1394
+:= -- 2621
+add.period$ -- 126
+call.type$ -- 36
+change.case$ -- 218
+chr.to.int$ -- 32
+cite$ -- 102
+duplicate$ -- 784
+empty$ -- 1394
+format.name$ -- 370
+if$ -- 3743
+int.to.chr$ -- 5
 int.to.str$ -- 1
-missing$ -- 5
-newline$ -- 55
-num.names$ -- 36
-pop$ -- 122
+missing$ -- 23
+newline$ -- 200
+num.names$ -- 136
+pop$ -- 514
 preamble$ -- 1
-purify$ -- 44
+purify$ -- 182
 quote$ -- 0
-skip$ -- 177
+skip$ -- 668
 stack$ -- 0
-substring$ -- 166
-swap$ -- 42
-text.length$ -- 3
+substring$ -- 503
+swap$ -- 136
+text.length$ -- 13
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 99
-warning$ -- 2
-while$ -- 40
+type$ -- 396
+warning$ -- 28
+while$ -- 142
 width$ -- 0
-write$ -- 128
-(There were 5 warnings)
+write$ -- 481
+(There were 39 warnings)
