@@ -113,6 +113,10 @@ At a high-level Kafka gives the following guarantees: \cite{Kafka}
 \end{itemize}
 
 
+Another very important feature of Kafka is messages with the same partition key will be sent to the same partition that is very important to our benchmark.
+% kafka guarantees that data with same key will be sent to the same partition
+
+
 \begin{figure}
   \begin{center}
   \subfigure{\includegraphics[scale=0.75]{images/partitioned_log}}
