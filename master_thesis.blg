@@ -4,27 +4,27 @@ The top-level auxiliary file: master_thesis.aux
 The style file: plainnat.bst
 Database file #1: sources.bib
 Warning--entry type for "GameChanger" isn't style-file defined
---line 37 of file sources.bib
+--line 46 of file sources.bib
 Warning--entry type for "HDFS" isn't style-file defined
---line 69 of file sources.bib
+--line 78 of file sources.bib
 Warning--entry type for "MapReduce" isn't style-file defined
---line 76 of file sources.bib
+--line 85 of file sources.bib
 Warning--entry type for "Kafka" isn't style-file defined
---line 83 of file sources.bib
+--line 92 of file sources.bib
 Warning--entry type for "TPC-H" isn't style-file defined
---line 90 of file sources.bib
+--line 99 of file sources.bib
 Warning--entry type for "TPC-C" isn't style-file defined
---line 95 of file sources.bib
+--line 104 of file sources.bib
 Warning--entry type for "YSB" isn't style-file defined
---line 136 of file sources.bib
+--line 145 of file sources.bib
 Warning--entry type for "xinhstechblog" isn't style-file defined
---line 325 of file sources.bib
+--line 334 of file sources.bib
 Warning--entry type for "manoj-sotrm-vs-spark" isn't style-file defined
---line 330 of file sources.bib
+--line 339 of file sources.bib
 Warning--entry type for "flink-latency" isn't style-file defined
---line 336 of file sources.bib
+--line 345 of file sources.bib
 Warning--entry type for "samza-benchmark" isn't style-file defined
---line 342 of file sources.bib
+--line 351 of file sources.bib
 Warning--to sort, need author or key in Giraph
 Warning--to sort, need author or key in xinhstechblog
 Warning--empty author in Giraph
@@ -53,45 +53,45 @@ Warning--empty journal in mell2011nist
 Warning--empty year in manoj-sotrm-vs-spark
 Warning--empty year in pokludabenchmarking
 Warning--empty year in YSB
-You've used 36 entries,
+You've used 38 entries,
             2773 wiz_defined-function locations,
-            798 strings with 11577 characters,
-and the built_in function-call counts, 17609 in all, are:
-= -- 1566
-> -- 1064
-< -- 30
-+ -- 370
-- -- 330
-* -- 1394
-:= -- 2621
-add.period$ -- 126
-call.type$ -- 36
-change.case$ -- 218
-chr.to.int$ -- 32
-cite$ -- 102
-duplicate$ -- 784
-empty$ -- 1394
-format.name$ -- 370
-if$ -- 3743
+            809 strings with 12168 characters,
+and the built_in function-call counts, 19155 in all, are:
+= -- 1703
+> -- 1187
+< -- 32
++ -- 411
+- -- 369
+* -- 1526
+:= -- 2850
+add.period$ -- 134
+call.type$ -- 38
+change.case$ -- 237
+chr.to.int$ -- 34
+cite$ -- 106
+duplicate$ -- 846
+empty$ -- 1496
+format.name$ -- 411
+if$ -- 4078
 int.to.chr$ -- 5
 int.to.str$ -- 1
-missing$ -- 23
-newline$ -- 200
-num.names$ -- 136
-pop$ -- 514
+missing$ -- 25
+newline$ -- 210
+num.names$ -- 144
+pop$ -- 558
 preamble$ -- 1
-purify$ -- 182
+purify$ -- 199
 quote$ -- 0
-skip$ -- 668
+skip$ -- 721
 stack$ -- 0
-substring$ -- 503
-swap$ -- 136
-text.length$ -- 13
+substring$ -- 555
+swap$ -- 154
+text.length$ -- 15
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 396
+type$ -- 418
 warning$ -- 28
-while$ -- 142
+while$ -- 154
 width$ -- 0
-write$ -- 481
+write$ -- 509
 (There were 39 warnings)

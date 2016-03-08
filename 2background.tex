@@ -162,7 +162,7 @@ The Yahoo Streaming Benchmark(YSB) is introduced to analysis what Storm is good 
 
 Each event(message) in Kafka topic contains a timestamp marking the time producer created this event. Truncating this timestamp to a particular digit gives the begin-time of the time window that the event belongs in. When each window is updated in Redis, the last updated time is recored.
 
-After each run, a utility reads windows from Redis and compares the windows? times to their last update times in Redis, yielding a latency data point. Because the last event for a window cannot have been emitted after the window closed but will be very shortly before, the difference between a window?s time and its last update time minus its duration represents the time it took for the final tuple in a window to go from Kafka to Redis through the application. \\
+After each run, a utility reads windows from Redis and compares the windows' times to their last update times in Redis, yielding a latency data point. Because the last event for a window cannot have been emitted after the window closed but will be very shortly before, the difference between a window's time and its last update time minus its duration represents the time it took for the final tuple in a window to go from Kafka to Redis through the application. \\
 
 $finalEventLatency = (lastUpdatedTime - timestamp) - duration$ \\
 
