@@ -66,6 +66,8 @@ One specific feature of Flink is that Flink has its own memory management system
 In Flink memory management is used for all operations that accumulate a number of records. Without memory management tool, operations would fail when the data is larger than the memory that JVM could spare. The memory management is a way to control very precisely how much memory each operator uses, and to let them de-stage efficiently to out-of-core operation, by moving some of the data do disk. Currently, the memory management is used only in batch operations. 
 
 \section{Apache Spark}
+\label{section:spark}
+
 Apache Spark is currently the most actively open source large-scale data processing framework used in many enterprises across the world. It was originally developed in 2009 in UC Berkeley's AMPLab, and open sourced in 2010 as an Apache project. Compared to other big data and MapReduce technologies like Hadoop and Storm, Spark has several advantages. 
 
 Spark is very easy to use by providing APIs in Scala, Java, Python and R languages. Moreover, there are more than 80 high-level built-in operators.  In the case of implementing a simple WordCount application, all the execution logic code could be written in one line with Spark' Scala API.

@@ -53,45 +53,45 @@ Warning--empty journal in mell2011nist
 Warning--empty year in manoj-sotrm-vs-spark
 Warning--empty year in pokludabenchmarking
 Warning--empty year in YSB
-You've used 38 entries,
+You've used 39 entries,
             2773 wiz_defined-function locations,
-            809 strings with 12168 characters,
-and the built_in function-call counts, 19155 in all, are:
-= -- 1703
-> -- 1187
-< -- 32
-+ -- 411
-- -- 369
-* -- 1526
-:= -- 2850
-add.period$ -- 134
-call.type$ -- 38
-change.case$ -- 237
-chr.to.int$ -- 34
-cite$ -- 106
-duplicate$ -- 846
-empty$ -- 1496
-format.name$ -- 411
-if$ -- 4078
+            814 strings with 12360 characters,
+and the built_in function-call counts, 19791 in all, are:
+= -- 1766
+> -- 1217
+< -- 33
++ -- 421
+- -- 378
+* -- 1573
+:= -- 2936
+add.period$ -- 138
+call.type$ -- 39
+change.case$ -- 243
+chr.to.int$ -- 35
+cite$ -- 108
+duplicate$ -- 879
+empty$ -- 1550
+format.name$ -- 421
+if$ -- 4224
 int.to.chr$ -- 5
 int.to.str$ -- 1
-missing$ -- 25
-newline$ -- 210
-num.names$ -- 144
-pop$ -- 558
+missing$ -- 26
+newline$ -- 215
+num.names$ -- 148
+pop$ -- 573
 preamble$ -- 1
-purify$ -- 199
+purify$ -- 204
 quote$ -- 0
-skip$ -- 721
+skip$ -- 747
 stack$ -- 0
-substring$ -- 555
-swap$ -- 154
-text.length$ -- 15
+substring$ -- 589
+swap$ -- 165
+text.length$ -- 16
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 418
+type$ -- 429
 warning$ -- 28
-while$ -- 154
+while$ -- 160
 width$ -- 0
-write$ -- 509
+write$ -- 523
 (There were 39 warnings)

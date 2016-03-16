@@ -1,5 +1,5 @@
 \chapter{Background}
-This thesis focuses on building a benchmark framework for stream processing systems, which aim to solve issues related to \textbf{V}elocity and \textbf{V}ariety of big data. \cite{GameChanger} Therefore, it is easy to know that the stream processing technology belongs to cloud computing technologies and it has many common features of cloud computing technologies. In the first section of this chapter, we will discuss some background knowledge about distributed computing.   Widely accepted benchmark systems of other computer science area and an existing benchmark of stream processing systems are demonstrated in the second chapter. 
+This thesis focuses on building a benchmark framework for stream processing systems, which aim to solve issues related to \textbf{V}elocity and \textbf{V}ariety of big data. \cite{GameChanger} Therefore, it is easy to know that the stream processing technology belongs to cloud computing technologies and it has many common features of cloud computing technologies. In the first section of this chapter, we will discuss some background knowledge about distributed cloud computing.   Widely accepted benchmark systems of other computer science area and an existing benchmark of stream processing systems are demonstrated here. 
 
 \section{Cloud Computing}
 Cloud computing, also known as 'on-demand computing', is a kind of Internet-based computing, where shared resources, data and information are provided to computers and other devices on-demand. It is a model for enabling ubiquitous, on-demand access to a shared pool of configurable computing resources. \cite{neto2011demystifying, mell2011nist} Cloud computing and storage solutions provide users and enterprises with various capabilities to store and process their data in third-party data centers. \cite{haghighat2015cloudid} Users could use computing and storage resources as need elastically and pay according to the amount of resources used. In another way, we could say cloud computing technologies is a collection of technologies to provide elastic "pay as you go" computing. That includes scalable file system and data storage such as Amazon S3 and Dynamo, scalable processing such as MapReduce and Spark, visualization of computing resources and distributed consensus etc. 
@@ -19,7 +19,7 @@ A computer cluster consists of a set of computers which are connected to each ot
 
 % task scheduling
 % node failure
-Most computing clusters have two different type of nodes, master nodes and slave nodes. Generally,  users only interact with the master node which is a specific computer managing slaves and scheduling tasks. Slave nodes are not available to users which makes the whole cluster as a single system. It is possible that each nodes in a cluster could be failed with some probability. To avoid master node be the single point of failure, master server may be further divided to active master and standby master (passive master) in order to meet the requirement of fault tolerance. When a slave node failed, master node will reassign the running task in the failed node to another slave node. 
+One common kind of clusters is master-slave clusters which have two different types of nodes, master nodes and slave nodes. Generally,  users only interact with the master node which is a specific computer managing slaves and scheduling tasks. Slave nodes are not available to users which makes the whole cluster as a single system. It is possible that each nodes in a cluster could be failed with some probability. To avoid master node be the single point of failure, master server may be further divided to active master and standby master (passive master) in order to meet the requirement of fault tolerance. When a slave node failed, master node will reassign the running task in the failed node to another slave node. 
 
 As the features of computing cluster demonstrated above, it is usually used to improve performance and availability over that of a single computer. In most cases, the average computing ability of a node is less than a single computer as scheduling and communication between nodes consume resources.
 
@@ -94,7 +94,7 @@ In general, HDFS and MapReduce always works together. In a distribute cluster, e
   \end{center}
 \end{figure}
 
-ApacheKafka is a distributed, partitioned, replicated commit log service developed by the Apache Software Foundation. It aims to provide a unified, high-throughput, low-latency platform for handling real-time data feeds. Before we go into architecture of Kafak, there are some basic messaging terminologies: \cite{Kafka}
+Apache Kafka is a distributed, partitioned, replicated commit log service which was originally developed by LinkedIn. Now it is one top level project of the Apache Software Foundation. It aims to provide a unified, high-throughput, low-latency platform for handling real-time data feeds. Before we go into architecture of Kafak, there are some basic messaging terminologies: \cite{Kafka}
 
 \begin{itemize}
   \item \textbf{Topic:} Kafka maintains feeds of messages in categories called topics. 
@@ -113,7 +113,7 @@ At a high-level Kafka gives the following guarantees: \cite{Kafka}
 \end{itemize}
 
 
-Another very important feature of Kafka is messages with the same partition key will be sent to the same partition that is very important to our benchmark.
+Another very important feature of Kafka is messages with the same key will be sent to the same partition. When a distribute application consumes data from a kafka topic parallelly,  data with the same key goes to the same executor which could avoid data shuffle.
 % kafka guarantees that data with same key will be sent to the same partition
 
 
