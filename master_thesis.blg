@@ -25,8 +25,11 @@ Warning--entry type for "flink-latency" isn't style-file defined
 --line 345 of file sources.bib
 Warning--entry type for "samza-benchmark" isn't style-file defined
 --line 351 of file sources.bib
+Warning--entry type for "kmeans_wiki" isn't style-file defined
+--line 396 of file sources.bib
 Warning--to sort, need author or key in Giraph
 Warning--to sort, need author or key in xinhstechblog
+Warning--to sort, need author or key in kmeans_wiki
 Warning--empty author in Giraph
 Warning--empty journal in Giraph
 Warning--empty year in Giraph
@@ -53,45 +56,45 @@ Warning--empty journal in mell2011nist
 Warning--empty year in manoj-sotrm-vs-spark
 Warning--empty year in pokludabenchmarking
 Warning--empty year in YSB
-You've used 39 entries,
+You've used 43 entries,
             2773 wiz_defined-function locations,
-            814 strings with 12360 characters,
-and the built_in function-call counts, 19791 in all, are:
-= -- 1766
-> -- 1217
-< -- 33
-+ -- 421
-- -- 378
-* -- 1573
-:= -- 2936
-add.period$ -- 138
-call.type$ -- 39
-change.case$ -- 243
-chr.to.int$ -- 35
-cite$ -- 108
-duplicate$ -- 879
-empty$ -- 1550
-format.name$ -- 421
-if$ -- 4224
+            835 strings with 13082 characters,
+and the built_in function-call counts, 21961 in all, are:
+= -- 1969
+> -- 1323
+< -- 38
++ -- 458
+- -- 411
+* -- 1737
+:= -- 3226
+add.period$ -- 151
+call.type$ -- 43
+change.case$ -- 265
+chr.to.int$ -- 39
+cite$ -- 118
+duplicate$ -- 989
+empty$ -- 1740
+format.name$ -- 457
+if$ -- 4716
 int.to.chr$ -- 5
 int.to.str$ -- 1
-missing$ -- 26
-newline$ -- 215
-num.names$ -- 148
-pop$ -- 573
+missing$ -- 30
+newline$ -- 234
+num.names$ -- 160
+pop$ -- 639
 preamble$ -- 1
-purify$ -- 204
+purify$ -- 223
 quote$ -- 0
-skip$ -- 747
+skip$ -- 835
 stack$ -- 0
-substring$ -- 589
-swap$ -- 165
-text.length$ -- 16
+substring$ -- 686
+swap$ -- 198
+text.length$ -- 20
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 429
-warning$ -- 28
-while$ -- 160
+type$ -- 468
+warning$ -- 29
+while$ -- 178
 width$ -- 0
-write$ -- 523
-(There were 39 warnings)
+write$ -- 574
+(There were 41 warnings)
