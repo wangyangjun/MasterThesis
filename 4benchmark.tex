@@ -20,11 +20,6 @@ Except the core Java program, the architecture also includes three more componen
 \section{Experiment Environment Setup}
 \label{chapter:environment_setup}
 
-\subsection{Hardware}
-
-The experiment environment consists of two clusters: compute cluster and Kafka cluster. Computer cluster consists of 8 work nodes and one master nodes. Kafka cluster has 5 brokers with one zookeeper instance running on the same machine with one Kafka broker. Each above node is a visual machine which has 4 CPU and 15 GB RAM. All the nodes are in the same local area network that provides low latency and high throughput connectivity. 
-
-\subsection{Software}
 The operator system running on experiment nodes is Ubuntu 14.04 LTS. Benchmarked stream processing systems are Spark-1.5.1, Storm-0.10.0 and Flink-0.10.1. To enable checkpoint feature of Spark, Hadoop2.6(HDFS) is installed in compute cluster. Kafka 0.8.2.1 is running as distribute message system here. 
 
 To deploy these software in compute cluster and kafka cluster automatically, we developed a set of python script. The prerequisites of using these scripts include internet access, ssh passwordless login between nodes in cluster and cluster configuration that describes which nodes are compute node or kafka node and where is the master node. The basic logic of deploy scripts is to download softwares online and install them, then replace configure files which are contained in a Github repository. For detail information of how to use cluster deploy scripts and configure of Storm, Flink, Spark and Kafka, please check this Github repository~\footnote{\url{https://github.com/wangyangjun/StreamBench}}.
@@ -37,23 +32,27 @@ In StreamBench, a workload consists of a stream processing application and one o
 
 \subsection{Basic Operators}
 
-With the widespread use of computer technologies, there is increasing demand of processing unbounded, continuous input streams. In most cases, only basic operations need to be performed on the data streams such as \texttt{map}, \texttt{reduce}. One good sample is stream WordCount. WordCount is a very common sample application of Hadoop MapReduce that counts the number of occurrences of each word in a given input set. \cite{MapReduce} Similarly many stream processing systems also support it as an sample application to count words in a  given input stream. Stream WordCount is implemented with basic operations which are supported by almost all stream processing systems. It means either the system has such operations by default or the operations could be implemented with provided built-in APIs. Other basic operations include \texttt{flatMap}, \texttt{mapToPair} and \texttt{filter} which are similar to \texttt{map} and could be implemented by specializing \texttt{map} if not supported by default. In StreamBench, there are a set of corresponding basic APIs defined. The pseudocode of WordCount implemented with these basic APIs could be abstracted as following:
+With the widespread use of computer technologies, there is increasing demand of processing unbounded, continuous input streams. In most cases, only basic operations need to be performed on the data streams such as \texttt{map}, \texttt{reduce}. One good sample is stream WordCount. WordCount is a very common sample application of Hadoop MapReduce that counts the number of occurrences of each word in a given input set.\cite{MapReduce} Similarly, many stream processing systems also support it as an sample application to count words in a  given input stream. Stream WordCount is implemented with basic operations which are supported by almost all stream processing systems. It means either the system has such operations by default or the operations could be implemented with provided built-in APIs. Other basic operations include \texttt{flatMap}, \texttt{mapToPair} and \texttt{filter} which are similar to \texttt{map} and could be implemented by specializing \texttt{map} if not supported by default. In StreamBench, there are a set of corresponding basic APIs defined. The pseudocode of WordCount implemented with these basic APIs could be abstracted as Algorithm~\ref{alg:word_count}.
 
-\begin{lstlisting}
-    sentenceStream.flatMap(...)
-                  .mapToPair(...)
-                  .reduceByKey(...)
-                  .updateStateByKey(...);
+\begin{algorithm}
+\caption{WordCount}\label{euclid}
+\label{alg:word_count}
+\begin{algorithmic}[1]
+\State $\textit{sentenceStream.flatMap(...)}$
+\State \hspace{2.6cm} $\textit{.mapToPair(...)}$
+\State \hspace{2.6cm} $\textit{.reduceByKey(...)}$
+\State \hspace{2.6cm} $\textit{.updateStateByKey(...)}$
 
-\end{lstlisting}
+\end{algorithmic}
+\end{algorithm}
 
-One special case of the basic APIs is \texttt{updateStateByKey}. Only in Spark Streaming there is a corresponding built-in operation. As discussed in Section~\ref{section:spark}, the computing model of Spark Streaming is micro-batch which is different with that of other stream processing systems. The results of operation \texttt{reduceByKey} of WordCount running in Spark Streaming is word counts of one single micro batch data set. Operation \texttt{updateStateByKey} is used to accumulate word counts in Spark Streaming. As the model of Flink and Storm is stream processing and accumulated word counts are returned from \texttt{reduceByKey} directly. Therefore, in the implementations of \texttt{updateStateByKey} with Flink and Storm, nothing need to do. The goal of this workload is to evaluate the performance of stream processing systems executing basic operations.  
+One special case of the basic APIs is \texttt{updateStateByKey}. Only in Spark Streaming there is a corresponding built-in operation. As discussed in Section~\ref{section:spark}, the computing model of Spark Streaming is micro-batch which is different with that of other stream processing systems. The results of operation \texttt{reduceByKey} of WordCount running in Spark Streaming is word counts of one single micro batch data set. Operation \texttt{updateStateByKey} is used to accumulate word counts in Spark Streaming. Because the model of Flink and Storm is stream processing and accumulated word counts are returned from \texttt{reduceByKey} directly. Therefore, when implementing the API \texttt{updateStateByKey} with Flink and Storm engine, nothing need to do. The goal of this workload is to evaluate the performance of stream processing systems executing basic operations.  
 
 
 \subsection{Join Operator}
  \label{sub:join_operator}
 
-Besides the cases in which only basic operations are performed, another typical type of stream use case is processing joins over unbounded streams. For example, in a surveillance application, we may want to correlate cell phone traffic with email traffic. Theoretically unbounded memory is required to processing join over unbounded input streams, since every record in one infinite stream must be compared with every record in the other. Obviously, this is not practical. \cite{window-join} Since the memory of a machine is limited, we need restrict the number of records stored for each stream with a time window. 
+Besides the cases in which only basic operations are performed, another typical type of stream use case is processing joins over unbounded streams. For example, in a surveillance application, we may want to correlate cell phone traffic with email traffic. Theoretically unbounded memory is required to processing join over unbounded input streams, since every record in one infinite stream must be compared with every record in the other. Obviously, this is not practical.\cite{window-join} Since the memory of a machine is limited, we need restrict the number of records stored for each stream with a time window. 
 
 A window join takes two key-value pair streams of tuple, say stream \textit{S1:} \texttt{(k, v1)} and stream \textit{S2:} \texttt{(k, v2)}, along with window sizes for both \textit{S1} and \textit{S2} as input. The output is a stream of tuple \texttt{(k, v1, v2)}. Assuming a sliding window join between stream \textit{S1} and stream \textit{S2}, a new tuple arrival from stream \textit{S1}, then a summary of steps to preform join is the following:
 
@@ -75,7 +74,7 @@ A window join takes two key-value pair streams of tuple, say stream \textit{S1:}
   \end{center}
 \end{figure}
 
-In step 2, there are two options. In the case of at most one tuple which has the same key with the new tuple could be found in stream \textit{S2}, option (b) is executed. Otherwise, option (a) is performed. Every time new tuple arrives stream \textit{S1}, window of stream \textit{S2} need be scanned. That reduces the performance of join operator, especially when windows are big.
+In step 2, there are two options. In the case of at most one tuple which has the same key with the new tuple could be found in stream \textit{S2}, option (b) is executed. Otherwise, option (a) is performed. Every time new tuple arrives stream \textit{S1}, window of stream \textit{S2} need be scanned. That reduces the performance of join operator, especially when the window is big.
 
 In the first case mentioned above, with a data structure named \texttt{cachedHashTable} there is another way to implement stream join. The tuples in the window of a stream are stored in a cached hash table. Each tuple is cached for window time and expired tuples are invalidated automatically. One of such a \texttt{cachedHashTable} could be found in Guava.\footnote{\url{http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/cache/CacheBuilder.html}} Instead of scanning window of stream \textit{S2}, we could find tuple with the same key in \textit{S2} directly by calling \texttt{cachedHashTable.get(k)}. In theory, this implementation achieves better performance. 
 
@@ -89,15 +88,16 @@ Since Spark Streaming doesn't process tuples in a stream one by one, the join op
   \end{center}
 \end{figure}
 
+
+To evaluate performance of join operator in stream processing systems, we designed a workload called AdvClick which joins two streams in a online advertisement system. Every second there are a huge number of web pages opened which contain advertisement slots. A corresponding stream of shown advertisements is generated in the system and a record in the stream could be simply described as a tuple of \texttt{(id, shown time)}. Some of advertisements would be clicked by users and clicked advertisements is a stream which could be abstracted as a unbound tuples of \texttt{(id, clicked time)}. We assume that a record of advertisement shown always arrivers earlier than corresponding click record. Normally, if an advertisement is attractive to a user, it will be clicked in seconds or a few minutes after shown. We call such a click of an attractive advertisement valid click. To bill a customer, we need count all valid clicks regularly for advertisements of this customer. Which could be counted after joining stream \texttt{advertisement clicks} and stream \texttt{shown advertisements} with a configureable window time. 
+
 \begin{figure}
   \begin{center}
   \subfigure{\includegraphics[scale=0.6]{images/spark_join_repeat}}
-   \caption{Spark Stream join with joined tuples}
+   \caption{Spark Stream join with repeated tuples}
    \label{fig:spark_join_repeat}
   \end{center}
 \end{figure}
-
-To evaluate performance of join operator in stream processing systems, we designed a workload called AdvClick which joins two streams in a online advertisement system. Every second there are a huge number of web pages opened which contain advertisement slots. A corresponding stream of shown advertisements is generated in the system and a record in the stream could be simply described as a tuple of \texttt{(id, shown time)}. Some of advertisements would be clicked by users and clicked advertisements is a stream which could be abstracted as a unbound tuples of \texttt{(id, clicked time)}. We assume that a record of advertisement shown always arrivers earlier than corresponding click record. Normally, if an advertisement is attractive to a user, it will be clicked in seconds or a few minutes after shown. We call such a click of an attractive advertisement valid click. To bill a customer, we need count all valid clicks regularly for advertisements of this customer. Which could be counted after joining stream \texttt{advertisement clicks} and stream \texttt{shown advertisements} with a configureable window time. 
 
 \subsection{Iterate Operator}
 
@@ -111,7 +111,7 @@ KMeans is a clustering algorithm which aims to partition n points into k cluster
 
 The algorithm has converged when the assignments no longer change. We apply k-means algorithm on a stream of points with an iterate operator to update centroids.
 
-Compared to clustering for data set, the clustering problem for the data stream domain is difficult because of two issues that are hard to address: (1) The quality of the clusters is poor when the data evolves considerably over time. (2) A data stream clustering algorithm requires much greater functionality in discovering and exploring clusters over different portions of the stream.\cite{aggarwal2003framework} Considering the main purpose of this workload is to evaluate iterative loop in stream data processing, we don't try to solve these issues here. Similarly, stream k-means also has two steps: assignment and update. What different is each point in the stream only passes the application once. When the application is started, assignment executors start with initialized centroids. As shown in Figure~\ref{fig:iterator_operator}, once a new centroid calculated, it will be broadcasted to assignment executors. 
+Compared to clustering for data set, the clustering problem for the data stream domain is difficult because of two issues that are hard to address: (1) The quality of the clusters is poor when the data evolves considerably over time. (2) A data stream clustering algorithm requires much greater functionality in discovering and exploring clusters over different portions of the stream.\cite{aggarwal2003framework} Considering the main purpose of this workload is to evaluate iterative loop in stream data processing, we don't try to solve these issues here. Similarly, stream k-means also has two steps: assignment and update. The difference is each point in the stream only passes the application once and the application doesn't try to buffer points. As shown in Figure~\ref{fig:iterator_operator}, once a new centroid calculated, it will be broadcasted to assignment executors. 
 
  \begin{figure}
   \begin{center}
@@ -184,8 +184,14 @@ Stream k-means is a one-pass clustering algorithm for stream data. In this workl
 
 
 \section{Experiment Logging and Statistic}
-
 \label{section:log_statistic}
+
+For evaluating the performance, there are two performance measurement terms used in StreamBench that are latency and throughput. Latency is the required time from a record entering the system to some results produced after some actions performed on the record. In StreamBench, messaging system and stream processing system are combined together and treated as one single system. The latency is computed start from when a record is generated. As discussed in Section \ref{section:data_generator}, data is sent to kafka cluster immediately after generation. Figure~\ref{fig:latency} shows how latency computed in StreamBench. 
+
+Throughput is the number of actions executed or results produced per unit of time. In the WordCount workload, throughput is computed as the number of words counted per seconds in the whole compute cluster. Joined clicked stream and the number of points processed per second are the throughput of workloads AdvClick and Stream KMeans respectively.
+
+There is an inherent tradeoff between latency and throughput: on a given hardware setup, as the amount of load increases by increase the speed of data generation, the latency of individual records increases as well since there is more contention for disk, CPU, network, and so on. Computing latency start from records generated makes it easy to measure the highest throughput, since records couldn't produced in time will stay in kafka topics that increase latency dramatically. A stream processing system with better performance will achieve low latency and high throughput with fewer servers.
+
 \begin{figure}
   \begin{center}
   \subfigure{\includegraphics[scale=0.5]{images/latency}}
@@ -193,12 +199,6 @@ Stream k-means is a one-pass clustering algorithm for stream data. In this workl
    \label{fig:latency}
   \end{center}
 \end{figure}
-
-For evaluating the performance, there are two performance measurement terms used in StreamBench that are latency and throughput. Latency is the required time from a record entering the system to some results produced after some actions performed on the record. In StreamBench, messaging system and stream processing system are combined together and treated as one single system. The latency is computed start from when a record is generated. As discussed in Section \ref{section:data_generator}, data is sent to kafka cluster immediately after generation. Figure~\ref{fig:latency} shows how latency computed in StreamBench. 
-
-Throughput is the number of actions executed or results produced per unit of time. In the WordCount workload, throughput is computed as the number of words counted per seconds in the whole compute cluster. Joined clicked stream and the number of points processed per second are the throughput of workloads AdvClick and Stream KMeans respectively.
-
-There is an inherent tradeoff between latency and throughput: on a given hardware setup, as the amount of load increases by increase the speed of data generation, the latency of individual records increases as well since there is more contention for disk, CPU, network, and so on. Computing latency start from records generated makes it easy to measure the highest throughput, since records couldn't produced in time will stay in kafka topics that increase latency dramatically. A stream processing system with better performance will achieve low latency and high throughput with fewer servers.
 
 \section{Extensibility}
 \label{section:extensibility}
