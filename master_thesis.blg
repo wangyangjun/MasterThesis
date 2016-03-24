@@ -27,8 +27,8 @@ Warning--entry type for "samza-benchmark" isn't style-file defined
 --line 351 of file sources.bib
 Warning--entry type for "kmeans_wiki" isn't style-file defined
 --line 396 of file sources.bib
-Warning--to sort, need author or key in Giraph
 Warning--to sort, need author or key in xinhstechblog
+Warning--to sort, need author or key in Giraph
 Warning--to sort, need author or key in kmeans_wiki
 Warning--empty author in Giraph
 Warning--empty journal in Giraph
@@ -36,11 +36,13 @@ Warning--empty year in Giraph
 Warning--empty year in Giraph
 Warning--empty year in xinhstechblog
 Warning--empty journal in capota2015graphalytics
+Warning--can't use both volume and number fields in carlsson2002monads
 Warning--empty journal in cordovaanalysis
 Warning--empty year in cordovaanalysis
 Warning--empty year in cordovaanalysis
 Warning--empty year in TPC-C
 Warning--empty year in TPC-H
+Warning--can't use both volume and number fields in demetrescu2011reactive
 Warning--empty year in samza-benchmark
 Warning--empty year in HDFS
 Warning--empty year in Kafka
@@ -56,45 +58,45 @@ Warning--empty journal in mell2011nist
 Warning--empty year in manoj-sotrm-vs-spark
 Warning--empty year in pokludabenchmarking
 Warning--empty year in YSB
-You've used 43 entries,
+You've used 45 entries,
             2773 wiz_defined-function locations,
-            835 strings with 13082 characters,
-and the built_in function-call counts, 21961 in all, are:
-= -- 1969
-> -- 1323
-< -- 38
-+ -- 458
-- -- 411
-* -- 1737
-:= -- 3226
-add.period$ -- 151
-call.type$ -- 43
-change.case$ -- 265
-chr.to.int$ -- 39
-cite$ -- 118
-duplicate$ -- 989
-empty$ -- 1740
-format.name$ -- 457
-if$ -- 4716
+            848 strings with 13328 characters,
+and the built_in function-call counts, 23112 in all, are:
+= -- 2084
+> -- 1363
+< -- 43
++ -- 472
+- -- 423
+* -- 1822
+:= -- 3379
+add.period$ -- 159
+call.type$ -- 45
+change.case$ -- 275
+chr.to.int$ -- 41
+cite$ -- 124
+duplicate$ -- 1052
+empty$ -- 1844
+format.name$ -- 471
+if$ -- 4980
 int.to.chr$ -- 5
 int.to.str$ -- 1
-missing$ -- 30
-newline$ -- 234
-num.names$ -- 160
-pop$ -- 639
+missing$ -- 32
+newline$ -- 244
+num.names$ -- 168
+pop$ -- 662
 preamble$ -- 1
-purify$ -- 223
+purify$ -- 231
 quote$ -- 0
-skip$ -- 835
+skip$ -- 884
 stack$ -- 0
-substring$ -- 686
-swap$ -- 198
-text.length$ -- 20
+substring$ -- 746
+swap$ -- 222
+text.length$ -- 24
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 468
-warning$ -- 29
-while$ -- 178
+type$ -- 490
+warning$ -- 31
+while$ -- 190
 width$ -- 0
-write$ -- 574
-(There were 41 warnings)
+write$ -- 604
+(There were 43 warnings)
