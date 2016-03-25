@@ -17,86 +17,89 @@ Warning--entry type for "TPC-C" isn't style-file defined
 --line 104 of file sources.bib
 Warning--entry type for "YSB" isn't style-file defined
 --line 145 of file sources.bib
+Warning--entry type for "extend-YSB" isn't style-file defined
+--line 152 of file sources.bib
 Warning--entry type for "xinhstechblog" isn't style-file defined
---line 334 of file sources.bib
+--line 344 of file sources.bib
 Warning--entry type for "manoj-sotrm-vs-spark" isn't style-file defined
---line 339 of file sources.bib
+--line 350 of file sources.bib
+Warning--entry type for "manoj-realtime" isn't style-file defined
+--line 355 of file sources.bib
 Warning--entry type for "flink-latency" isn't style-file defined
---line 345 of file sources.bib
+--line 360 of file sources.bib
 Warning--entry type for "samza-benchmark" isn't style-file defined
---line 351 of file sources.bib
+--line 366 of file sources.bib
 Warning--entry type for "kmeans_wiki" isn't style-file defined
---line 396 of file sources.bib
-Warning--to sort, need author or key in xinhstechblog
+--line 411 of file sources.bib
 Warning--to sort, need author or key in Giraph
 Warning--to sort, need author or key in kmeans_wiki
 Warning--empty author in Giraph
 Warning--empty journal in Giraph
 Warning--empty year in Giraph
 Warning--empty year in Giraph
-Warning--empty year in xinhstechblog
 Warning--empty journal in capota2015graphalytics
-Warning--can't use both volume and number fields in carlsson2002monads
 Warning--empty journal in cordovaanalysis
 Warning--empty year in cordovaanalysis
 Warning--empty year in cordovaanalysis
 Warning--empty year in TPC-C
 Warning--empty year in TPC-H
-Warning--can't use both volume and number fields in demetrescu2011reactive
 Warning--empty year in samza-benchmark
 Warning--empty year in HDFS
 Warning--empty year in Kafka
 Warning--empty year in MapReduce
 Warning--can't use both volume and number fields in ghemawat2003google
 Warning--can't use both volume and number fields in PowerGraph
+Warning--empty year in extend-YSB
 Warning--empty journal in guo2014well
 Warning--empty journal in guo2014benchmarking
 Warning--empty journal in iosup2014towards
 Warning--empty year in flink-latency
 Warning--empty journal in Pregel
 Warning--empty journal in mell2011nist
+Warning--empty year in manoj-realtime
 Warning--empty year in manoj-sotrm-vs-spark
 Warning--empty year in pokludabenchmarking
 Warning--empty year in YSB
-You've used 45 entries,
+Warning--empty year in xinhstechblog
+You've used 44 entries,
             2773 wiz_defined-function locations,
-            848 strings with 13328 characters,
-and the built_in function-call counts, 23112 in all, are:
-= -- 2084
-> -- 1363
-< -- 43
-+ -- 472
-- -- 423
-* -- 1822
-:= -- 3379
-add.period$ -- 159
-call.type$ -- 45
-change.case$ -- 275
-chr.to.int$ -- 41
-cite$ -- 124
-duplicate$ -- 1052
-empty$ -- 1844
-format.name$ -- 471
-if$ -- 4980
-int.to.chr$ -- 5
+            838 strings with 13238 characters,
+and the built_in function-call counts, 22293 in all, are:
+= -- 1994
+> -- 1343
+< -- 40
++ -- 466
+- -- 417
+* -- 1752
+:= -- 3288
+add.period$ -- 155
+call.type$ -- 44
+change.case$ -- 270
+chr.to.int$ -- 39
+cite$ -- 120
+duplicate$ -- 999
+empty$ -- 1767
+format.name$ -- 465
+if$ -- 4779
+int.to.chr$ -- 6
 int.to.str$ -- 1
-missing$ -- 32
-newline$ -- 244
+missing$ -- 29
+newline$ -- 240
 num.names$ -- 168
-pop$ -- 662
+pop$ -- 655
 preamble$ -- 1
-purify$ -- 231
+purify$ -- 227
 quote$ -- 0
-skip$ -- 884
+skip$ -- 847
 stack$ -- 0
-substring$ -- 746
-swap$ -- 222
-text.length$ -- 24
+substring$ -- 681
+swap$ -- 201
+text.length$ -- 20
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 490
-warning$ -- 31
-while$ -- 190
+type$ -- 479
+warning$ -- 30
+while$ -- 183
 width$ -- 0
-write$ -- 604
-(There were 43 warnings)
+write$ -- 587
+(There were 44 warnings)
