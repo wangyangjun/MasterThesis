@@ -1,10 +1,15 @@
-\chapter{Stream Processing Platforms}
-In practice, there are plenty of cases that need stable and efficient stream processing system to deal with continuously incoming data. In some case, results of data processing could be required in minutes or even in seconds. Such as sensors data should be processed and monitored on the dashboard as soon as possible. Examples of stream processing systems include Apache Apex, Aurora, S4, Storm, Samza, Flink, Spark Streaming, IBM InfoSphere Streams, Amazon Kinesis and many others. The design and architecture of these systems are different so that they own different features. Three open source systems: Storm, Flink and Spark which are widely used in a range of applications are choose in our benchmark. As these are open source systems, it is possible to set up our own distribute cluster to run experiment benchmarks. 
 
-In this chapter, we will introduce these three systems in detail from different perspectives: system architecture, core concepts and key features. Several other stream processing systems are also discussed. 
+\chapter{Stream Processing Platforms}
+
+There are many stream processing systems that include Apache Apex, Aurora, S4, Storm, Samza, Flink, Spark Streaming, IBM InfoSphere Streams, and Amazon Kinesis. Some systems are being improved, and new stream processing systems are being developed. The design, computational model, and architecture of these systems are different so that they own different features. Among these systems, some are not open sourced and we couldn't download and setup a stream processing cluster. For instance, Amazon Kinesis is only available in AWS. Some ones are open source systems with system design, source code public and it is possible to set up our own distribute cluster to run experiment benchmarks. In StreamBench, we choose three popular and widely used open source stream processing systems which have many similarities. These systems are Storm, Flink and Spark Streaming. 
+
+% similarities of all the frameworks
+First, all these systems are MapReduce inspired, support transformations similar to \texttt{Map} and aggregations like \texttt{Reduce}. The computational models of these systems are also similar which are graphs consisted of transformations and/or aggregations. For example, in Storm a topology is a graph of stream transformations where each node is a spout or bolt. Unlike MapReduce, these systems deal with unbound stream of tuples and support integration with Kafka, a distributed messaging system discussed in \cref{subsection:kafka}, in which stream data is distributed in different partitions. Moreover, these stream processing frameworks run tasks in parallel. Integrate with Kafka, these system achieve both data parallelism and task parallelism of parallel computing. Another similarity of these systems is horizontal scalability. Work with these systems, we could add more machines into a stream processing cluster to achieve better performance.
+
+In this chapter, we introduce these three systems in detail from different perspectives: system architecture, core concepts, and key features. Several other stream processing systems are also discussed. 
  
 \section{Apache Storm}
-Apache Storm, one of oldest distributed stream processing system which was open sourced by Twitter in 2011 and became Apache top-level project in 2014.  Storm is to realtime data processing as Apache Hadoop and MapReduce are to batch data processing. Storm solutions can also provide guaranteed processing of data, with the ability to replay data that was not successfully processed the first time.With its simple programming interface, Storm allows application developers to write applications that analyze streams of tuples of data; a tuple may can contain object of any type.
+Apache Storm, one of oldest distributed stream processing system which was open sourced by Twitter in 2011 and became Apache top-level project in 2014.  Storm is to realtime data processing as Apache Hadoop is to batch data processing. A Hadoop job is finished after all data processing operations are done. Unlike Hadoop, Storm is an always-active service that receives and processes unbound streams of data and delivers that data instantaneously, in realtime. Storm solutions can also provide guaranteed processing of data, with the ability to replay data that was not successfully processed the first time.With its simple programming interface, Storm allows application developers to write applications that analyze streams of tuples of data; a tuple may can contain object of any type.
 
 \subsection{Storm Architecture}
 \begin{figure}
@@ -15,26 +20,32 @@ Apache Storm, one of oldest distributed stream processing system which was open 
   \end{center}
 \end{figure}
 
-As a distributed stream processing system, a storm cluster consists of a set of nodes. Figure~\ref{fig:storm_cluster} shows components of a storm cluster which contains four different kinds of nodes, "Supervisor", "Nimbus", "Zookeeper" and "ui". 
+As a distributed stream processing system, a storm cluster consists of a set of nodes. Figure~\ref{fig:storm_cluster} shows components of a storm cluster which contains four different kinds of nodes, "Supervisor", "Nimbus", "Zookeeper" and "UI". 
 
 "Nimbus" is a daemon runs on the master node which is similar to Hadoop's "JobTracker". Nimbus is responsible for distributing code around the cluster, assigning tasks to machines, and monitoring for failures. Each worker node runs a daemon called the "Supervisor." It listens for work assigned to its machine and starts and stops worker processes as dictated by Nimbus. Each worker process executes a subset of a topology; a running topology consists of many worker processes spread across many machines.
 
-All coordination between Nimbus and the Supervisors is done through a Zookeeper cluster. Additionally, the Nimbus daemon and Supervisor daemons are fail-fast and stateless; all state is kept in Zookeeper or on local disk. This means you can kill -9 Nimbus or the Supervisors and they'll start back up like nothing happened. Hence, Storm clusters are stable and fault-tolerant
+All coordination between Nimbus and the Supervisors is done through a Zookeeper cluster. Additionally, the Nimbus daemon and Supervisor daemons are fail-fast and stateless; all state is kept in Zookeeper or on local disk. Hence, Storm clusters are stable and fault-tolerant
 
-"ui" is a daemon which monitors summary of cluster and running topologies on a web interface. The summary of cluster includes storm version, Nimbus up-time, the number of Supervisors, etc. Properties of a topology (such as id, name, status and uptime) and emitted tuples of a spout/bolt also could be found in "ui". More detail about understanding the Storm UI could be found on the page~\footnote{\url{http://www.malinga.me/reading-and-understanding-the-storm-ui-storm-ui-explained/}}.
+"UI" is a daemon which monitors summary of cluster and running topologies on a web interface. Properties of a topology (such as id, name, status and uptime) and emitted tuples of a spout/bolt also could be found in "ui". More detail about understanding the Storm UI could be found on the page~\footnote{\url{http://www.malinga.me/reading-and-understanding-the-storm-ui-storm-ui-explained/}}.
 
 
-\subsection{Computing Model}
+\subsection{Computational Model}
 
 At the core of Storm's data stream processing is a computational topology,  which is a graph of stream transformations where each node is a spout or bolt. Edges in the graph indicate which bolts are subscribing to which streams as shown in Figure~\ref{fig:storm_model}.
 
 Spouts are the sources of streams in a topology which will read tuples from external sources (e.g. Twitter API, Kafka) or from disk and emit them in the topology. Bolt receives input streams from spout or other bolt, process them and produce output streams. They encapsulate the application logic which dictates how tuples are processed, transformed,aggregated, stored, or re-emitted to other nodes in the topology for further processing. When a spout or bolt emits a tuple to a stream, it sends the tuple to every bolt that subscribed to that stream.
 
-A stream in topology is an unbounded sequence of tuples. Spouts read tuples from external sources continuously. Once a topology is submitted, it processes messages forever, or until it is killed. Storm will automatically reassign any failed tasks. Additionally, Storm guarantees that there will be no data loss, even if machines go down and messages are dropped.
+A stream in topology is an unbounded sequence of tuples. Spouts read tuples from external sources continuously. Once a topology is submitted, it processes messages forever, or until it is killed. Storm will automatically reassign any failed tasks. Each node in a Storm topology executes in parallel. In your topology, you can specify how much parallelism you want for each node, and then Storm will spawn that number of threads across the cluster to do the execution. 
 
-Each node in a Storm topology executes in parallel. In your topology, you can specify how much parallelism you want for each node, and then Storm will spawn that number of threads across the cluster to do the execution.
+Additionally, Storm guarantees that there will be no data loss, every tuple will be fully processed at least once. This is achieved by following steps:
 
-Guaranteed processing
+\begin{enumerate}
+\item Each tuple emitted in a spout is specified with an unique message ID;
+\item Each tuple emitted in a bolt, anchor it with corresponding input tuples; 
+\item When bolts are done processing the input tuple, ack or fail the input tuple
+\end{enumerate}
+
+This mode tracks whether each spout tuple is ?fully? processed within a configured timeout. Any input tuple not fully processed within the timeout is re-emitted. This means the same tuple could be processed more than once and messages can be processed out-of-order. 
 
 \begin{figure}
   \begin{center}
@@ -54,50 +65,76 @@ In Hadoop MapReduce, a operation wouldn't start until the previous operation is 
 
 Flink's runtime natively supports both domains due to pipelined data transfers between parallel tasks which includes pipelined shuffles. Batch jobs can be optionally executed using blocking data transfers. They are special cases of stream processing applications.
 
-\subsection{Memory Management}
-One specific feature of Flink is that Flink has its own memory management system. Conceptually, Flink splits the heap into three regions: ~\footnote{\url{https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=53741525}}
+%\subsection{Memory Management}
+%One specific feature of Flink is that Flink has its own memory management system. Conceptually, Flink splits the heap into three regions: ~\footnote{\url{https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=53741525}}
+
+%\begin{itemize}
+%\item \textbf{Network buffers:} A number of 32 KiByte buffers used by the network stack to buffer records for network transfer. Allocated on TaskManager startup. 
+%\item \textbf{Memory Manager pool:} A large collection of buffers (32 KiBytes) that are used by all runtime algorithms whenever they need to buffer records. Records are stored in serialized form in those blocks.
+%\item \textbf{Remaining (Free) Heap:} This part of the heap is left to the user code and the TaskManager's data structures.
+%\end{itemize}
+ 
+%In Flink memory management is used for all operations that accumulate a number of records. Without memory management tool, operations would fail when the data is larger than the memory that JVM could spare. The memory management is a way to control very precisely how much memory each operator uses, and to let them de-stage efficiently to out-of-core operation, by moving some of the data do disk. Currently, the memory management is used only in batch operations. 
+
+\subsection{Computational Model}
+
+The computational model of Flink is graph consists of \texttt{transformaitons} and \texttt{sources}, which is similar to Storm. Edges in the graph indicate different states of \texttt{DataStream}. That is different with Storm, in which input of of a bolt is always a stream of tuples without specific state. These states includes \texttt{DataStream}, \texttt{KeyedDataStream}, \texttt{WindowedDataStream}, and \texttt{ConnectedDataStream}\cite{flink_model}:
+
+\begin{figure}
+  \begin{center}
+  \subfigure{\includegraphics[scale=0.55]{images/flink_model}}
+   \caption{Flink computing model}
+   \label{fig:flink_model}
+  \end{center}
+\end{figure}
 
 \begin{itemize}
-\item \textbf{Network buffers:} A number of 32 KiByte buffers used by the network stack to buffer records for network transfer. Allocated on TaskManager startup. 
-\item \textbf{Memory Manager pool:} A large collection of buffers (32 KiBytes) that are used by all runtime algorithms whenever they need to buffer records. Records are stored in serialized form in those blocks.
-\item \textbf{Remaining (Free) Heap:} This part of the heap is left to the user code and the TaskManager's data structures.
+\item A KeyedDataStream represents a data stream where elements are evaluated as "grouped" by a specified key. 
+\item In a WindowedDataStream, records in the stream are organized into groups by the key, and per group, they are windowed together by the windowing. A WindowedDataStream is always created from a KeyedDataStream that assigns records to groups.
+\item The ConnectedDataStream is a way to share state between two tuple-at-a-time operations. It can be through of as executing two \texttt{map} (or \texttt{flatMap}) in the same object.
 \end{itemize}
- 
-In Flink memory management is used for all operations that accumulate a number of records. Without memory management tool, operations would fail when the data is larger than the memory that JVM could spare. The memory management is a way to control very precisely how much memory each operator uses, and to let them de-stage efficiently to out-of-core operation, by moving some of the data do disk. Currently, the memory management is used only in batch operations. 
+
+The transformations between different states of DataStream could be shown as Figure~\ref{fig:flink_model}. 
+
+Similar to Storm, Flink supports cycle in the graph model. Flink supports the iterations in native platform by defining a step function and embedding it into a special iteration operator. There are two variants of this operator: Iterate and Delta Iterate. Both operators repeatedly invoke the step function on the current iteration state until a certain termination condition is reached.
 
 \section{Apache Spark}
 \label{section:spark}
 
-Apache Spark is currently the most actively open source large-scale data processing framework used in many enterprises across the world. It was originally developed in 2009 in UC Berkeley's AMPLab, and open sourced in 2010 as an Apache project. Compared to other big data and MapReduce technologies like Hadoop and Storm, Spark has several advantages. 
+Apache Spark is currently the most active open source large-scale data processing framework used in many enterprises across the world. It was originally developed in 2009 in UC Berkeley's AMPLab, and open sourced in 2010 as an Apache project. Compared to other big data and MapReduce technologies like Hadoop and Storm, Spark has several advantages. 
 
 Spark is very easy to use by providing APIs in Scala, Java, Python and R languages. Moreover, there are more than 80 high-level built-in operators.  In the case of implementing a simple WordCount application, all the execution logic code could be written in one line with Spark' Scala API.
 
 Spark powers a stack of libraries including SQL and DataFrames, MLlib for machine learning, GraphX, and Spark Streaming. You can combine these libraries seamlessly in the same application. It can access diverse data sources including HDFS, Cassandra, HBase, and S3.
 
-Spark achieves much better performance than Hadoop MapReduce. Spark has an advanced Direct Acyclic Graph(DAG) execution engine that supports cyclic data flow and in-memory computing. By using RDDs which will be discussed in next subsection, intermediate results are stored in memory and reused for further performing functions thereafter, as opposed to being written to hard disk. 
+Spark achieves much better performance than Hadoop MapReduce mainly because Spark supports in-memory computing. By using RDDs which will be discussed in \cref{subsection:rdd}, intermediate results are stored in memory and reused for further performing functions thereafter, as opposed to being written to hard disk. 
 
 \subsection{ Resilient Distributed Dataset(RDD)}
+\label{subsection:rdd}
+\textbf{R}esilient \textbf{D}istributed \textbf{D}ataset(RDD) is a fault-tolerant abstraction of read-only collection of elements partitioned across the distributed computer nodes in memory which can be operated on in parallel. To achieve fault-tolerant property, RDDs can only be created through deterministic operations on either (1) data in stable storage or (2) other RDDs\cite{zaharia2012resilient}. An RDD could keep all information about how it was derived from other datasets to compute its partitions from data in table storage. Therefore, RDDs are fault tolerance because they could be reconstructed from a failure with these kept information. 
 
-\textbf{R}esilient \textbf{D}istributed \textbf{D}ataset(RDD) is a fault-tolerant abstraction of read-only collection of elements partitioned across the distributed computer nodes in memory which can be operated on in parallel. RDDs can only be created through deterministic operations on either (1) data in stable storage or (2) other RDDs\cite{zaharia2012resilient}. 
+RDD supports two different kinds of operations, transformation and action. When a transformation operation is called on a RDD object, a new RDD returned and the original RDD remains the same. For example, map is a transformation that passes each element in RDD through a function and returns a new RDD representing the results. Some of the transformation operations are \texttt{map}, \texttt{filter}, \texttt{flatMap}, \texttt{groupByKey}, and \texttt{reduceByKey}. 
 
-RDD supports two different kinds of operations, transformation and action.  When a transformation operation is called on a RDD object, a new RDD returned and the original RDD remains the same. For example, map is a transformation that passes each element in RDD through a function and returns a new RDD representing the results. Some of the transformation operations are  map, filter, flatMap, groupByKey and reduceByKey. 
-
-An action returns a value to the driver program after running a computation on the RDD. Reduce is an action that aggregates all the elements of the RDD using some function and returns the final result to the driver program.
-
-No matter how an RDD is created, it keeps all information about how it was derived from other dataset to compute its partitions from data in stable storage or how it is transformed from other RDD. Therefore, RDDs are fault tolerance because they could be reconstructed from a failure with these kept information. 
-
-All transformations in Spark are lazy, in that they do not compute their results right away. Instead, they just remember the transformations applied to some base dataset (e.g. a file). The transformations are only computed when an action requires a result to be returned to the driver program. This design enables Spark to run more efficiently ? for example, we can realize that a dataset created through map will be used in a reduce and return only the result of the reduce to the driver, rather than the larger mapped dataset.
+An action returns a value to the driver program after running a computation on the RDD. One representative action is \texttt{reduce} that aggregates all the elements of the RDD using some function and returns the final result to the driver program. Other actions include \texttt{collect}, \texttt{count}, and \texttt{save}.
 
 By default, each transformed RDD may be recomputed each time you run an action on it. However, by caching RDD in memory, allowing it to be reused efficiently across parallel operations. The recomputation of cached RDD is avoid  and a significant amount of disk I/O could be reduced. Especially in the case of looping jobs, the performance would be improved. In Spark, users can manually specify if working sets are cached or not. The runtime engine would manage low-level caching mechanism like how to distribute cache blocks.
 
-\subsection{Spark Streaming}
+\subsection{Computational Model}
+
 \begin{figure}
   \begin{center}
-  \subfigure{\includegraphics[scale=0.7]{images/spark_stream}}
-   \caption{Spark Streaming Model}
-   \label{fig:spark_stream}
+  \subfigure{\includegraphics[scale=0.5]{images/spark_stage}}
+   \caption{Spark job stages\cite{zaharia2012resilient}}
+   \label{fig:spark_stage}
   \end{center}
 \end{figure}
+
+The execution engine of Spark supports lazy evaluation. When transformations applied to an RDD, the execution engine doesn't do any computation, but remember the transformations. The transformations are only computed when an action requires a result to be returned to the driver program. This design enables Spark to run more efficiently. For example, we can realize that a dataset created through map will be used in a reduce and return only the result of the reduce to the driver, rather than the larger mapped dataset.
+
+Spark has an advanced directed acyclic graph (DAG) execution engine that implements stage-oriented scheduling. Whenever a user runs an action (e.g., count or save) on an RDD, the scheduler examines that RDD?s lineage graph to build a DAG of stages to execute, as illustrated in Figure~\ref{fig:spark_stage}. Each stage contains as many pipelined transformations with narrow dependencies as possible. The boundaries of the stages are the shuffle operations required for wide dependencies, or any already computed partitions that can shortcircuit the computation of a parent RDD\cite{zaharia2012resilient}. The execution engine executes each stage in computer nodes that perform on distributed partitions of RDD in parallel. Different with Flink's pipeline execution model, Spark does not execute multi stages simultaneously\cite{shi2015clash}. In the DAG, tasks of a stage wouldn't start until all its dependencies are done. 
+
+
+\subsection{Spark Streaming}
 
 Spark Streaming is an extension of the core Spark API that enables scalable, high-throughput, fault-tolerant stream processing of live data streams. 
 
@@ -105,12 +142,16 @@ Spark Streaming receives live input data streams and divides the data into batch
 
 DStreams can be created either from input data streams from sources such as Kafka, Flume, and Kinesis, or by applying high-level operations on other DStreams. Internally, a DStream is represented as a sequence of micro RDDs. After applied transformations or actions on a DStream,   a new DStream or result values would be get which can be pushed out to filesystems, databases, and live dashboards.
 
+\begin{figure}
+  \begin{center}
+  \subfigure{\includegraphics[scale=0.65]{images/spark_stream}}
+   \caption{Spark Streaming Model}
+   \label{fig:spark_stream}
+  \end{center}
+\end{figure}
+
 \section{Other Stream Processing Systems}
 \subsection{Apache Samza}
-Apache Samza is a top-level project of Apache Software Foundation which open sourced by LinkedIn to solve stream processing requirements. It?s been in production at LinkedIn for several years and currently runs on hundreds of machines. 
-
-A Samza application is constructed out of streams and jobs. A stream is composed of immutable sequences of messages of a similar type or category.  A Samza job is code that performs a logical transformation on a set of input streams to append output messages to set of output streams. In order to scale the throughput of the stream processor, streams are are are broken into partitions and jobs are broken into smaller units of execution called tasks. Each task consumes data from one or more partitions for each of the job's input streams. Multiple jobs could be composed together to create a dataflow graph, where the nodes are streams containing data, and the edges are jobs performing transformations. 
-
 \begin{figure}
   \begin{center}
   \subfigure{\includegraphics[scale=0.5]{images/samza_dataflow}}
@@ -118,6 +159,11 @@ A Samza application is constructed out of streams and jobs. A stream is composed
    \label{fig:smaza_dataflow}
   \end{center}
 \end{figure}
+
+Apache Samza is a top-level project of Apache Software Foundation which open sourced by LinkedIn to solve stream processing requirements. It's been in production at LinkedIn for several years and currently runs on hundreds of machines. 
+
+A Samza application is constructed out of streams and jobs. A stream is composed of immutable sequences of messages of a similar type or category.  A Samza job is code that performs a logical transformation on a set of input streams to append output messages to set of output streams. In order to scale the throughput of the stream processor, streams are are are broken into partitions and jobs are broken into smaller units of execution called tasks. Each task consumes data from one or more partitions for each of the job's input streams. Multiple jobs could be composed together to create a dataflow graph, where the nodes are streams containing data, and the edges are jobs performing transformations. 
+
 
 Except streams and jobs, Samza uses  YARN as execution layer. The architecture of Samza follows a similar pattern to Hadoop which could be shown as Figure~\ref{fig:smaza_architecture}.
 

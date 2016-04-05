@@ -128,8 +128,9 @@ Spark executes data analysis pipeline using directed acyclic graph scheduler.  N
  A data generator is a program that produces and sends unbound records continuously to kafka cluster which are consumed by corresponding workload. For each workload, we designed one or several data generators with some parameters configureable which define the skew in record popularity, the size of records etc. These parameters could be changed to evaluate the performance of a system executing one workload on similar data streams with different properties. 
 
 \subsection{WordCount}
+\label{subsection:wordcount_generator}
 
-Generators of workload WordCount produce unbound lists of sentences, each sentence consists of several words. The number of words in each sentence satisfies normal distribution with mean and variance configureable. Each word is a 5-digit zero-padded string of a binary integer, such as "00001". There are two generators implemented with these integers satisfy two different distribution: uniform distribution and normal distribution.
+Generators of workload WordCount produce unbound lists of sentences, each sentence consists of several words. The number of words in each sentence satisfies normal distribution with mean and variance configureable. Each word is a 5-digit zero-padded string of a binary integer, such as ``00001". There are two generators implemented with these integers satisfy two different distribution: uniform distribution and normal distribution.
 
 \subsection{AdvClick}
 

@@ -31,7 +31,10 @@ Warning--entry type for "samza-benchmark" isn't style-file defined
 --line 366 of file sources.bib
 Warning--entry type for "kmeans_wiki" isn't style-file defined
 --line 411 of file sources.bib
+Warning--entry type for "flink_model" isn't style-file defined
+--line 436 of file sources.bib
 Warning--to sort, need author or key in Giraph
+Warning--to sort, need author or key in flink_model
 Warning--to sort, need author or key in kmeans_wiki
 Warning--empty author in Giraph
 Warning--empty journal in Giraph
@@ -61,45 +64,45 @@ Warning--empty year in manoj-sotrm-vs-spark
 Warning--empty year in pokludabenchmarking
 Warning--empty year in YSB
 Warning--empty year in xinhstechblog
-You've used 44 entries,
+You've used 46 entries,
             2773 wiz_defined-function locations,
-            838 strings with 13238 characters,
-and the built_in function-call counts, 22293 in all, are:
-= -- 1994
-> -- 1343
+            848 strings with 13619 characters,
+and the built_in function-call counts, 23260 in all, are:
+= -- 2078
+> -- 1409
 < -- 40
-+ -- 466
-- -- 417
-* -- 1752
-:= -- 3288
-add.period$ -- 155
-call.type$ -- 44
-change.case$ -- 270
-chr.to.int$ -- 39
-cite$ -- 120
-duplicate$ -- 999
-empty$ -- 1767
-format.name$ -- 465
-if$ -- 4779
++ -- 489
+- -- 438
+* -- 1844
+:= -- 3423
+add.period$ -- 160
+call.type$ -- 46
+change.case$ -- 283
+chr.to.int$ -- 41
+cite$ -- 126
+duplicate$ -- 1035
+empty$ -- 1845
+format.name$ -- 487
+if$ -- 4983
 int.to.chr$ -- 6
 int.to.str$ -- 1
-missing$ -- 29
-newline$ -- 240
-num.names$ -- 168
-pop$ -- 655
+missing$ -- 30
+newline$ -- 249
+num.names$ -- 172
+pop$ -- 686
 preamble$ -- 1
-purify$ -- 227
+purify$ -- 238
 quote$ -- 0
-skip$ -- 847
+skip$ -- 879
 stack$ -- 0
-substring$ -- 681
-swap$ -- 201
+substring$ -- 717
+swap$ -- 204
 text.length$ -- 20
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 479
-warning$ -- 30
-while$ -- 183
+type$ -- 501
+warning$ -- 31
+while$ -- 188
 width$ -- 0
-write$ -- 587
-(There were 44 warnings)
+write$ -- 610
+(There were 46 warnings)

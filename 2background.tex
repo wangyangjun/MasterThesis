@@ -1,5 +1,5 @@
 \chapter{Background}
-The goal of this project is to build a benchmark framework for stream processing systems, which aim to solve issues related to \textbf{V}elocity and \textbf{V}ariety of big data\cite{GameChanger}. In order to process continuously incoming data with a low latency, both the data and stream processing task have to be distributed. Usually the data is stored in a distributed storage system which consists of a set of data nodes. A distributed storage system could be a distributed file system, for example HDFS(\cref{subsection:hdfs}), or distributed messaging system such as Kafka discussed in \cref{subsection:kafka}. The stream processing task is divided into a set of sub-tasks which are distributed in a computer cluster(see \cref{subsection:computing_cluster}). The nodes in a computer cluster read data from distributed storage system and execute sub-tasks parallelly. Which achieves both data parallelism and task parallelism of parallel computing which is discussed in \cref{subsection:parallel_computing}.
+The goal of this project is to build a benchmark framework for stream processing systems, which aim to solve issues related to \textbf{V}elocity and \textbf{V}ariety of big data\cite{GameChanger}. In order to process continuously incoming data with a low latency, both the data and stream processing task have to be distributed. Usually the data is stored in a distributed storage system which consists of a set of data nodes. A distributed storage system could be a distributed file system, for example HDFS(\cref{subsection:hdfs}), or distributed messaging system such as Kafka discussed in \cref{subsection:kafka}. The stream processing task is divided into a set of sub-tasks which are distributed in a computer cluster(see \cref{subsection:computing_cluster}). The nodes in a computer cluster read data from distributed storage system and execute sub-tasks in parallel. Which achieves both data parallelism and task parallelism of parallel computing which is discussed in \cref{subsection:parallel_computing}.
  
 In \cref{section:benchmark}, we present several widely accepted benchmarks of DBMS, cloud services and graph processing systems. There are many good features of the design and implementation of these benchmarks and some of them could be used in our benchmark as well. At the end, we discuss an existing benchmark of stream processing systems -- \texttt{The Yahoo Streaming Benchmark}. 
  
@@ -124,7 +124,7 @@ At a high-level Kafka gives the following guarantees: \cite{Kafka}
 \end{itemize}
 
 
-Another very important feature of Kafka is messages with the same key will be sent to the same partition. When a distributed application consumes data from a kafka topic parallelly,  data with the same key goes to the same executor which could avoid data shuffle.
+Another very important feature of Kafka is messages with the same key will be sent to the same partition. When a distributed application consumes data from a kafka topic in parallel,  data with the same key goes to the same executor which could avoid data shuffle.
 % kafka guarantees that data with same key will be sent to the same partition
 
 
