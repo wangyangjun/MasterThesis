@@ -1,10 +1,20 @@
 
 \chapter{Stream Processing Platforms}
 
+\begin{figure}
+  \begin{center}
+  \subfigure{\includegraphics[scale=0.46]{images/stream_process_model}}
+   \caption{Stream processing model}
+   \label{fig:stream_process_model}
+  \end{center}
+\end{figure}
+
 There are many stream processing systems that include Apache Apex, Aurora, S4, Storm, Samza, Flink, Spark Streaming, IBM InfoSphere Streams, and Amazon Kinesis. Some systems are being improved, and new stream processing systems are being developed. The design, computational model, and architecture of these systems are different so that they own different features. Among these systems, some are not open sourced and we couldn't download and setup a stream processing cluster. For instance, Amazon Kinesis is only available in AWS. Some ones are open source systems with system design, source code public and it is possible to set up our own distribute cluster to run experiment benchmarks. In StreamBench, we choose three popular and widely used open source stream processing systems which have many similarities. These systems are Storm, Flink and Spark Streaming. 
 
+
+First, all these systems are MapReduce inspired, they consider the stream as keyed tuples, support transformations similar to \texttt{Map} and aggregations like \texttt{Reduce}. The computational models of these systems are also similar which are graphs consisted of transformations and/or aggregations. Unlike MapReduce, these systems deal with unbound stream of tuples and support integration with Kafka, a distributed messaging system discussed in \cref{subsection:kafka}, in which stream data is distributed in different partitions. Moreover, these stream processing frameworks run tasks in parallel. Integrate with distribute message system, these system achieve both data parallelism and task parallelism of parallel computing. The lower part of Figure~\ref{fig:stream_process_model} shows that 3 compute nodes in a cluster consume messages from a Kafka topic with 3 partitions and run operators \texttt{mapToPair} and \texttt{reduce} in parallel. Each record in the stream is a tuple and there are different ways to forward tuples from a operator to another one, such as key grouping, all grouping, and shuffle grouping.  The computational topology of these systems is a graph shown as the upper part of Figure~\ref{fig:stream_process_model} in which nodes are stream sources and operators connected by stream grouping. Another similarity of these systems is horizontal scalability. Work with these systems, we could add more machines into a stream processing cluster to achieve better performance.
+
 % similarities of all the frameworks
-First, all these systems are MapReduce inspired, support transformations similar to \texttt{Map} and aggregations like \texttt{Reduce}. The computational models of these systems are also similar which are graphs consisted of transformations and/or aggregations. For example, in Storm a topology is a graph of stream transformations where each node is a spout or bolt. Unlike MapReduce, these systems deal with unbound stream of tuples and support integration with Kafka, a distributed messaging system discussed in \cref{subsection:kafka}, in which stream data is distributed in different partitions. Moreover, these stream processing frameworks run tasks in parallel. Integrate with Kafka, these system achieve both data parallelism and task parallelism of parallel computing. Another similarity of these systems is horizontal scalability. Work with these systems, we could add more machines into a stream processing cluster to achieve better performance.
 
 In this chapter, we introduce these three systems in detail from different perspectives: system architecture, core concepts, and key features. Several other stream processing systems are also discussed. 
  
@@ -14,7 +24,7 @@ Apache Storm, one of oldest distributed stream processing system which was open 
 \subsection{Storm Architecture}
 \begin{figure}
   \begin{center}
-  \subfigure{\includegraphics[scale=0.5]{images/storm_cluster}}
+  \subfigure{\includegraphics[scale=0.45]{images/storm_cluster}}
    \caption{Storm cluster components}
    \label{fig:storm_cluster}
   \end{center}
@@ -31,9 +41,7 @@ All coordination between Nimbus and the Supervisors is done through a Zookeeper 
 
 \subsection{Computational Model}
 
-At the core of Storm's data stream processing is a computational topology,  which is a graph of stream transformations where each node is a spout or bolt. Edges in the graph indicate which bolts are subscribing to which streams as shown in Figure~\ref{fig:storm_model}.
-
-Spouts are the sources of streams in a topology which will read tuples from external sources (e.g. Twitter API, Kafka) or from disk and emit them in the topology. Bolt receives input streams from spout or other bolt, process them and produce output streams. They encapsulate the application logic which dictates how tuples are processed, transformed,aggregated, stored, or re-emitted to other nodes in the topology for further processing. When a spout or bolt emits a tuple to a stream, it sends the tuple to every bolt that subscribed to that stream.
+At the core of Storm's data stream processing is a computational topology,  which is a graph of stream transformations similar to the one in Figure~\ref{fig:stream_process_model}. In the computational topology of Storm, stream source is consumed by a type of operator called spout. The operator with processing logic is called bolt. Spouts read tuples from external sources (e.g. Twitter API, Kafka) or from disk and emit them in the topology. Bolt receives input streams from spout or other bolt, process them and produce output streams. They encapsulate the application logic which dictates how tuples are processed, transformed,aggregated, stored, or re-emitted to other nodes in the topology for further processing. When a spout or bolt emits a tuple to a stream, it sends the tuple to every bolt that subscribed to that stream.
 
 A stream in topology is an unbounded sequence of tuples. Spouts read tuples from external sources continuously. Once a topology is submitted, it processes messages forever, or until it is killed. Storm will automatically reassign any failed tasks. Each node in a Storm topology executes in parallel. In your topology, you can specify how much parallelism you want for each node, and then Storm will spawn that number of threads across the cluster to do the execution. 
 
@@ -45,15 +53,8 @@ Additionally, Storm guarantees that there will be no data loss, every tuple will
 \item When bolts are done processing the input tuple, ack or fail the input tuple
 \end{enumerate}
 
-This mode tracks whether each spout tuple is ?fully? processed within a configured timeout. Any input tuple not fully processed within the timeout is re-emitted. This means the same tuple could be processed more than once and messages can be processed out-of-order. 
+This mode tracks whether each spout tuple is fully processed within a configured timeout. Any input tuple not fully processed within the timeout is re-emitted. This means the same tuple could be processed more than once and messages can be processed out-of-order. 
 
-\begin{figure}
-  \begin{center}
-  \subfigure{\includegraphics[scale=0.7]{images/storm_model}}
-   \caption{Storm topology model}
-   \label{fig:storm_model}
-  \end{center}
-\end{figure}
 
 \section{Apache Flink}
 Apache Flink used to be known as Stratosphere which was started off as an academic open source project in Berlin's Technical University in 2010. Later, it became a part of the Apache Software Foundation incubator and was accepted as an Apache top-level project in December 2014. Apache Flink aims to be a next generation system for big data system. It is a replacement for Hadoop MapReduce that works in both batch and streaming models. Its defining feature is its ability to process streaming data in real time. In Flink, batch processing applications run efficiently as special cases of stream processing applications.
@@ -78,7 +79,7 @@ Flink's runtime natively supports both domains due to pipelined data transfers b
 
 \subsection{Computational Model}
 
-The computational model of Flink is graph consists of \texttt{transformaitons} and \texttt{sources}, which is similar to Storm. Edges in the graph indicate different states of \texttt{DataStream}. That is different with Storm, in which input of of a bolt is always a stream of tuples without specific state. These states includes \texttt{DataStream}, \texttt{KeyedDataStream}, \texttt{WindowedDataStream}, and \texttt{ConnectedDataStream}\cite{flink_model}:
+The computational model of Flink is graph consists of \texttt{transformaitons} and \texttt{sources}, which is similar to Storm. Edges in the graph indicate state changes of \texttt{DataStream}. That is different with Storm, in which input of of a bolt is always a stream of tuples without specific state. These states includes \texttt{DataStream}, \texttt{KeyedDataStream}, \texttt{WindowedDataStream}, and \texttt{ConnectedDataStream}\cite{flink_model}:
 
 \begin{figure}
   \begin{center}
@@ -131,7 +132,7 @@ By default, each transformed RDD may be recomputed each time you run an action o
 
 The execution engine of Spark supports lazy evaluation. When transformations applied to an RDD, the execution engine doesn't do any computation, but remember the transformations. The transformations are only computed when an action requires a result to be returned to the driver program. This design enables Spark to run more efficiently. For example, we can realize that a dataset created through map will be used in a reduce and return only the result of the reduce to the driver, rather than the larger mapped dataset.
 
-Spark has an advanced directed acyclic graph (DAG) execution engine that implements stage-oriented scheduling. Whenever a user runs an action (e.g., count or save) on an RDD, the scheduler examines that RDD?s lineage graph to build a DAG of stages to execute, as illustrated in Figure~\ref{fig:spark_stage}. Each stage contains as many pipelined transformations with narrow dependencies as possible. The boundaries of the stages are the shuffle operations required for wide dependencies, or any already computed partitions that can shortcircuit the computation of a parent RDD\cite{zaharia2012resilient}. The execution engine executes each stage in computer nodes that perform on distributed partitions of RDD in parallel. Different with Flink's pipeline execution model, Spark does not execute multi stages simultaneously\cite{shi2015clash}. In the DAG, tasks of a stage wouldn't start until all its dependencies are done. 
+Spark has an advanced directed acyclic graph (DAG) execution engine that implements stage-oriented scheduling. The different thing is the computing unit in this graph is a RDD. While in Storm and Flink, the computing unit is one single record tuple in a stream. Whenever a user runs an action (e.g., count or save) on an RDD, the scheduler examines that RDD's lineage graph to build a DAG of stages to execute, as illustrated in Figure~\ref{fig:spark_stage}. Each stage contains as many pipelined transformations with narrow dependencies as possible. The boundaries of the stages are the shuffle operations required for wide dependencies, or any already computed partitions that can shortcircuit the computation of a parent RDD\cite{zaharia2012resilient}. The execution engine executes each stage in computer nodes that perform on distributed partitions of RDD in parallel. Different with Flink's pipeline execution model, Spark does not execute multi stages simultaneously\cite{shi2015clash}. In the DAG, tasks of a stage wouldn't start until all its dependencies are done. 
 
 
 \subsection{Spark Streaming}
