@@ -1,7 +1,7 @@
 \chapter{Benchmark Design}
 We developed a tool, called StreamBench, to execute benchmark workloads on stream processing systems. A key feature of StreamBench is extensibility, so that it could be extended not only to run new workloads but also to benchmark new stream processing systems. We have used StreamBench to measure the performance of several stream processing systems, as we report in the next chapter.  StreamBench is also available under an open source license, so that others may use and extend it, and contribute new workloads and stream processing system interfaces.
 
-In this chapter, we describe the architecture of StreamBench and introduce more detail of main components of StreamBench. 
+This chapter illustrates the architecture of StreamBench and introduce more detail of main components of StreamBench. 
 
 \section{Architecture}
 
@@ -13,26 +13,34 @@ In this chapter, we describe the architecture of StreamBench and introduce more 
   \end{center}
 \end{figure}
 
-The main component of StreamBench is a Java program for consuming data from partitioned kafka topic and runs workloads on stream processing cluster. In the program, there is a set of common APIs for stream processing which could be engined by stream processing systems. Currently we support these APIs on three stream processing systems: Storm, Flink and Spark Streaming. Several workloads are implemented by these common APIs. In StreamBench we implemented three workloads to benchmark performance of stream processing systems in different aspects. The architecture of StreamBench is shown in Figure~\ref{fig:streambench_architecture}. 
+The main component of StreamBench is a Java program for consuming data from partitioned kafka topic and executing workloads on stream processing cluster. The architecture of StreamBench is shown in Figure~\ref{fig:streambench_architecture}. The core of the architecture is StreamBench API which contains several states of stream and a set of stream processing APIs what are very similar to Flink's computational model. For example, API \texttt{mapToPair} maps a normal data stream to a keyed data stream, and API \texttt{filter} is a method with a parameter of boolean function and evaluates this boolean function for each element and retains those for which the function returns true. 
 
-Except the core Java program, the architecture also includes three more components: Cluster Deploy, Data Generator and Statistic. Section ~\ref{chapter:environment_setup} describes how to use cluster deploy scripts to setup experiment environment. Data generators generate test data for workloads and send it to kafka cluster that is demonstrated detailedly in Section~\ref{section:data_generator}. The Statistic component discussed in Section~\ref{section:log_statistic} includes experiment logging and performance statistic. 
+StreamBench API could be engined by different stream processing systems. Currently we support these APIs on three stream processing systems: Storm, Flink and Spark Streaming. It is very convenient to implement most interfaces of StreamBench API on Flink and Spark Streaming which have similar high level APIs. But there are also some APIs that Flink and/or Spark Streaming doesn't support well. For example, currently, Flink \texttt{join} operator only supports two streams joining on the same size window time. Therefore, we implemented another version \texttt{join} operator discussed in ~\cref{sub:join_operator} with Flink's low level API. Compare to Flink and Spark Streaming, Storm is more flexible by providing two low level APIs: spout and bolt. Bolts represent the processing logic unit in Storm. One can utilize bolts to do any kind of processing such as filtering, aggregating, joining, interacting with data stores, talking to external systems etc.
+
+With these common stream processing APIs, we implemented three workloads to benchmark performance of stream processing systems in different aspects. WordCount discussed in~\cref{sub:basic_operator} aims to evaluate the performance of stream processing systems performing basic operators. In~\cref{sub:join_operator}, we demonstrated a workload named AdvClick to benchmark two keyed streams joining operation. To check the performance of iterate operator, we designed a workload to calculate k-means of a point stream. More detail of this workload could be found in~\cref{sub:iterate_operator}.
+
+Except the core Java program, the architecture also includes three more components: Cluster Deploy, Data Generator and Statistic. Section~\ref{chapter:environment_setup} illustrates how to use cluster deploy scripts to setup experiment environment. Data generators generate test data for workloads and send it to kafka cluster that is demonstrated detailedly in ~\cref{section:data_generator}. The Statistic component discussed in ~\cref{section:log_statistic} includes experiment logging and performance statistic. 
+
 
 \section{Experiment Environment Setup}
 \label{chapter:environment_setup}
 
-The operator system running on experiment nodes is Ubuntu 14.04 LTS. Benchmarked stream processing systems are Spark-1.5.1, Storm-0.10.0 and Flink-0.10.1. To enable checkpoint feature of Spark, Hadoop2.6(HDFS) is installed in compute cluster. Kafka 0.8.2.1 is running as distribute message system here. 
+The experiment environment is a cloud service called cPouta which is the main production IaaS cloud at CSC -- a non-profit, state-owned company administered by the Ministry of Education and Culture. In cPouta,  there are several available virtual machine flavors. Each visual machine used in our experiment has 4 CPU cores, 15GB RAM, 10GB root disk and 220GB ephemeral disk. The experiment environment consists of two clusters: compute cluster and Kafka cluster. Computer cluster consists of 8 work nodes and one master nodes. Kafka cluster has 5 brokers with one zookeeper instance running on the same machine with one Kafka broker. The cPouta service is based on the hardware of the Taito cluster. Communication among nodes and to the storage is done by Infiniband FDR fabric, which provides low latency and high throughput connectivity. The detail information about hardware and inter connection could be found online~\footnote{\url{https://research.csc.fi/taito-supercluster\#1.1.2}}.
+
+The operating system running on experiment nodes is Ubuntu 14.04 LTS. Benchmarked stream processing systems are Spark-1.5.1, Storm-0.10.0 and Flink-0.10.1. To enable checkpoint feature of Spark, Hadoop2.6(HDFS) is installed in compute cluster. Kafka 0.8.2.1 is running as distribute message system here. 
 
 To deploy these software in compute cluster and kafka cluster automatically, we developed a set of python script. The prerequisites of using these scripts include internet access, ssh passwordless login between nodes in cluster and cluster configuration that describes which nodes are compute node or kafka node and where is the master node. The basic logic of deploy scripts is to download softwares online and install them, then replace configure files which are contained in a Github repository. For detail information of how to use cluster deploy scripts and configure of Storm, Flink, Spark and Kafka, please check this Github repository~\footnote{\url{https://github.com/wangyangjun/StreamBench}}.
 
 \section{Workloads}
 \label{section:workloads}
 
-In StreamBench, a workload consists of a stream processing application and one or more kafka topics. The application consumes messages from kafka cluster and executes operations or transformations on the messages. We have developed 3 workloads to evaluate different aspects of a system's performance. Each workload contains a representative operation or feature of stream processing system that can be used to evaluate systems at one particular point in the performance space. We have not attempted to exhaustively examine the entire performance space. As StreamBench is open sourced, users could also defined their own workloads either by defining a new set of workload parameters, or if necessary by implement a new workload which is discussed detailedly in section~\ref{section:extensibility}.
+In StreamBench, a workload consists of a stream processing application and one or more kafka topics. The application consumes messages from kafka cluster and executes operations or transformations on the messages. We have developed 3 workloads to evaluate different aspects of a system's performance. Each workload contains a representative operation or feature of stream processing system that can be used to evaluate systems at one particular point in the performance space. We have not attempted to exhaustively examine the entire performance space. As StreamBench is open sourced, users could also defined their own workloads either by defining a new set of workload parameters, or if necessary by implement a new workload which is discussed detailedly in~\cref{section:extensibility}.
 
 
 \subsection{Basic Operators}
+\label{sub:basic_operator}
 
-With the widespread use of computer technologies, there is increasing demand of processing unbounded, continuous input streams. In most cases, only basic operations need to be performed on the data streams such as \texttt{map}, \texttt{reduce}. One good sample is stream WordCount. WordCount is a very common sample application of Hadoop MapReduce that counts the number of occurrences of each word in a given input set.\cite{MapReduce} Similarly, many stream processing systems also support it as an sample application to count words in a  given input stream. Stream WordCount is implemented with basic operations which are supported by almost all stream processing systems. It means either the system has such operations by default or the operations could be implemented with provided built-in APIs. Other basic operations include \texttt{flatMap}, \texttt{mapToPair} and \texttt{filter} which are similar to \texttt{map} and could be implemented by specializing \texttt{map} if not supported by default. In StreamBench, there are a set of corresponding basic APIs defined. The pseudocode of WordCount implemented with these basic APIs could be abstracted as Algorithm~\ref{alg:word_count}.
+With the widespread use of computer technologies, there is an increasing demand of processing unbounded, continuous input streams. In most cases, only basic operations need to be performed on the data streams such as \texttt{map}, and \texttt{reduce}. One good sample is stream WordCount. WordCount is a very common sample application of Hadoop MapReduce that counts the number of occurrences of each word in a given input set\cite{MapReduce}. Similarly, many stream processing systems also support it as an sample application to count words in a  given input stream. Stream WordCount is implemented with basic operations which are supported by almost all stream processing systems. It means either the system has such operations by default or the operations could be implemented with provided built-in APIs. Other basic operations include \texttt{flatMap}, \texttt{mapToPair} and \texttt{filter} which are similar to \texttt{map} and could be implemented by specializing \texttt{map} if not supported by default. The pseudocode of WordCount implemented with StreamBench APIs could be abstracted as Algorithm~\ref{alg:word_count}.
 
 \begin{algorithm}
 \caption{WordCount}\label{euclid}
@@ -46,22 +54,45 @@ With the widespread use of computer technologies, there is increasing demand of 
 \end{algorithmic}
 \end{algorithm}
 
-One special case of the basic APIs is \texttt{updateStateByKey}. Only in Spark Streaming there is a corresponding built-in operation. As discussed in Section~\ref{section:spark}, the computing model of Spark Streaming is micro-batch which is different with that of other stream processing systems. The results of operation \texttt{reduceByKey} of WordCount running in Spark Streaming is word counts of one single micro batch data set. Operation \texttt{updateStateByKey} is used to accumulate word counts in Spark Streaming. Because the model of Flink and Storm is stream processing and accumulated word counts are returned from \texttt{reduceByKey} directly. Therefore, when implementing the API \texttt{updateStateByKey} with Flink and Storm engine, nothing need to do. The goal of this workload is to evaluate the performance of stream processing systems executing basic operations.  
+One special case of the basic APIs is \texttt{updateStateByKey}. Only in Spark Streaming there is a corresponding built-in operation. As discussed in Section~\ref{section:spark}, the computing model of Spark Streaming is micro-batch which is different with that of other stream processing systems. The results of operation \texttt{reduceByKey} of WordCount running in Spark Streaming is word counts of one single micro batch data set. Operation \texttt{updateStateByKey} is used to accumulate word counts in Spark Streaming. Because the model of Flink and Storm is stream processing and accumulated word counts are returned from \texttt{reduceByKey} directly. Therefore, when implementing the API \texttt{updateStateByKey} with Flink and Storm engine, nothing need to do. 
+
+% window pre-aggregation
+When dealing with skewed data, the compute node which count the word with largest frequency might be the bottleneck. Inspired from MapReduce Combiner, we designed another version of WordCount with \texttt{window} operator of stream processing. Windows are typically groups of events within a certain time period. In the reduce step of Windowed WordCount, first words are shuffle grouped and applied pre-aggregation. In a certain time period, local pre-aggregation results are stored at local compute nodes. At the end of a window time, the intermedia word counts are key grouped and reduced to get the final results.
+
+%The goal of this workload is to evaluate the performance of stream processing systems executing basic operations.  
+\begin{figure}
+  \begin{center}
+  \subfigure{\includegraphics[scale=0.4]{images/window_wordcount}}
+   \caption{Windowed WordCount}
+   \label{fig:windowed_wordcount}
+  \end{center}
+\end{figure}
 
 
 \subsection{Join Operator}
- \label{sub:join_operator}
+\label{sub:join_operator}
 
-Besides the cases in which only basic operations are performed, another typical type of stream use case is processing joins over unbounded streams. For example, in a surveillance application, we may want to correlate cell phone traffic with email traffic. Theoretically unbounded memory is required to processing join over unbounded input streams, since every record in one infinite stream must be compared with every record in the other. Obviously, this is not practical.\cite{window-join} Since the memory of a machine is limited, we need restrict the number of records stored for each stream with a time window. 
+Besides the cases in which only basic operations are performed, another typical type of stream use case is processing joins over two input streams. For example, in a surveillance application, we may want to correlate cell phone traffic with email traffic. Theoretically unbounded memory is required to processing join over unbounded input streams, since every record in one infinite stream must be compared with every record in the other. Obviously, this is not practical\cite{window-join}. Since the memory of a machine is limited, we need restrict the number of records stored for each stream with a time window. 
 
-A window join takes two key-value pair streams of tuple, say stream \textit{S1:} \texttt{(k, v1)} and stream \textit{S2:} \texttt{(k, v2)}, along with window sizes for both \textit{S1} and \textit{S2} as input. The output is a stream of tuple \texttt{(k, v1, v2)}. Assuming a sliding window join between stream \textit{S1} and stream \textit{S2}, a new tuple arrival from stream \textit{S1}, then a summary of steps to preform join is the following:
+A window join takes two key-value pair streams, say stream \textit{S1} and stream \textit{S2}, along with windows with the same slide size for both \textit{S1} and \textit{S2} as input. Each record in \textit{S1} is a tuple of pair \texttt{(k, v1)} with \texttt{k} as the primary key. The key in Stream \textit{S2:}\texttt{(k, v2)} is a foreign key referencing primary key in \textit{S1}. The output of join operator is a stream of tuple \texttt{(k, v1, v2)}. The operation could be described as a SQL query illustrated in Algorithm~\ref{alg:join_query}. Assuming a sliding window join between stream \textit{S1} and stream \textit{S2}, a new tuple arrival from stream \textit{S1}, then a summary of steps to preform join is the following:
+
+\begin{algorithm}
+\caption{Join Query}\label{euclid}
+\label{alg:join_query}
+\begin{algorithmic}[1]
+\State SELECT $\textit{S1.k},  $\textit{ S1.v1},  $\textit{S2.v2}$
+\State FROM $\textit{S1}$
+\State INNER JOIN $\textit{S2}$
+\State ON $\textit{S1.k}$ =  $\textit{S2.k}$
+\end{algorithmic}
+\end{algorithm}
 
 \begin{enumerate}
 \item Scan window of stream \textit{S2} to find any tuple which has the same key with this new tuple and propagate the result;
 \item 
 \begin{enumerate}
 \item Insert the new tuple into stream \textit{S1}'s window or
-\item  invalidate target tuple in stream \textit{S2}'s window if found;
+\item Invalidate target tuple in stream \textit{S2}'s window if found;
 \end{enumerate}
 \item Invalidate all expired tuples in stream \textit{S1}'s window.
 \end{enumerate}
@@ -100,6 +131,7 @@ To evaluate performance of join operator in stream processing systems, we design
 \end{figure}
 
 \subsection{Iterate Operator}
+\label{sub:iterate_operator}
 
 Iterative algorithms occur in many domains of data analysis, such as machine learning or graph analysis. Many stream data processing tasks require iterative sub-computations as well. To achieve these requirements, a data processing system should have the capacity to perform iterative processing on a real-time data stream. To achieve iterative sub-computations,  low-latency interactive access to results and consistent intermediate outputs, \citeauthor{murray2013naiad} introduced a computational model named timely dataflow that is based on a directed graph in which stateful vertices send and receive logically timestamped messages along directed edges. \cite{murray2013naiad} The dataflow graph may contain nested cycles and the timestamps reflect this structure in order to distinguish data that arise in different input epochs and loop iterations. With iterate operator, many stream processing systems already support such nested cycles in processing data flow graph. We designed a workload named StreamKMeans to evaluate iterate operator in stream processing systems.
 
@@ -125,12 +157,12 @@ Spark executes data analysis pipeline using directed acyclic graph scheduler.  N
 
 \section{Data Generators}
 \label{section:data_generator}
- A data generator is a program that produces and sends unbound records continuously to kafka cluster which are consumed by corresponding workload. For each workload, we designed one or several data generators with some parameters configureable which define the skew in record popularity, the size of records etc. These parameters could be changed to evaluate the performance of a system executing one workload on similar data streams with different properties. 
+ A data generator is a program that produces and sends unbound records continuously to kafka cluster which are consumed by corresponding workload. For each workload, we designed one or several data generators with some configureable parameters which define the skew in record popularity, the size of records, and the distribution of data etc. These parameters could be changed to evaluate the performance of a system executing one workload on similar data streams with different properties. Users of StreamBench also could implement their own data generators to produce benchmarking data.
 
 \subsection{WordCount}
 \label{subsection:wordcount_generator}
 
-Generators of workload WordCount produce unbound lists of sentences, each sentence consists of several words. The number of words in each sentence satisfies normal distribution with mean and variance configureable. Each word is a 5-digit zero-padded string of a binary integer, such as ``00001". There are two generators implemented with these integers satisfy two different distribution: uniform distribution and normal distribution.
+Generators of workload WordCount produce unbound lists of sentences, each sentence consists of several words. The number of words in each sentence satisfies normal distribution with mean and variance configureable. Each word is a 5-digit zero-padded string of a binary integer, such as ``00001". There are two generators implemented with these integers satisfy two different distribution: uniform distribution and zipfian distribution.
 
 \subsection{AdvClick}
 
