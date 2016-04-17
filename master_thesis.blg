@@ -2,6 +2,11 @@ This is BibTeX, Version 0.99d (TeX Live 2015)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: master_thesis.aux
 The style file: plainnat.bst
+Case mismatch error between cite keys kafka and Kafka
+---line 284 of file master_thesis.aux
+ : \citation{kafka
+ :                }
+I'm skipping whatever remains of this command
 Database file #1: sources.bib
 Warning--entry type for "GameChanger" isn't style-file defined
 --line 46 of file sources.bib
@@ -105,4 +110,4 @@ warning$ -- 31
 while$ -- 193
 width$ -- 0
 write$ -- 623
-(There were 46 warnings)
+(There was 1 error message)

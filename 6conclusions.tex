@@ -1,20 +1,20 @@
-\chapter{Conclusions}
-Summary of experiment results 
+\chapter{Conclusion and Future Work}
 
-\section{Selection in Practice}
-Summarize several factors which affect selection of stream processing systems in practic
+\section{Conclusion}
 
-\subsection{Performance Summary}
-\subsection{Issues }
+This thesis build a benchmark framework named StreamBench for stream processing systems. We selected three stream processing systems to perform the benchmarks. The experiment results shows that both Flink and Spark Streaming achieve much higher throughput than Storm. But Storm achieves a very low median latency. Generally, median latency of Flink is a litter higher than Storm. But they 99-th percentile latency are similar and usually less than one second. The computational model of Spark Streaming is micro-batch, that leads to a tradeoff between throughput and latency. The latency of Spark Streaming is usually much larger than Storm and Flink. 
+
+In practice, the selection of stream processing systems depends on the situation. If an application requests very low latency, but the requirement of throughput is not stringent, Storm would be the best choice. On the contrary, if throughput is the key requirement, Spark Streaming is a very good option. Flink achieves both low latency and high throughput. For most stream processing cases, Flink would be a good choice. 
 
 \section{Future Work}
-Future works
 
-The amount of data in Kafka affects the performance of Offline WordCount, especially for Storm.
-Increase computation nodes, to test scaleability. 
-Benchmark more stream processing systems and design more workloads.
+In addition to performance comparisons, other aspects of stream processing systems are also very important factors when selecting a system to deal with stream data in practice, such as scalability, elastic speedup, and availability. For example, a stream processing application is running in a cluster, it is possible that the speed of input stream keeps increasing and becomes larger than cluster's throughput. In this case, scalability is very important which indicates how much the processing ability of a cluster could increase by adding more compute nodes. These aspects of stream processing systems could be evaluated by extending StreamBench with new workloads.
 
-\subsection{Scale-out and Elasticity Evaluation}
-\subsection{Evaluation of Other Platforms}
+Beside design new workloads, we also could extend StreamBench to benchmark other stream processing systems. In the thesis, we only selected three stream processing systems to run the benchmarks. There are many other stream processing systems that are widely used, such as Amazon Kinesis and Apache Samza. Extending StreamBench to evaluate these systems is listed in our future work.
 
+There are some issues in StreamBench that could be improved or fixed in the future. First, the speed of data generation can't be controlled precisely. It fluctuates around some point. The throughputs mentioned in this thesis are all approximate value. Another issue we noticed is the amount of data in Kafka affects the performance of Offline WordCount, especially for Storm. How the amount of data in Kafka and other features of Kafka cluster affect the performance of stream processing is a very interesting research topic. It might help us evaluate the integration between system processing systems and distributed message systems. As mentioned in \cref{subsec:online_wordcount}, currently, Flink doesn't support pre-aggregation and parallel window could only be applied on keyed stream. It is possible to implement Windowed WordCount with Flink's low level API and could be done in our future work. 
+
+%Storm delay
 \clearpage
+
+

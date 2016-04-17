@@ -74,7 +74,7 @@ When dealing with skewed data, the compute node which count the word with larges
 
 Besides the cases in which only basic operations are performed, another typical type of stream use case is processing joins over two input streams. For example, in a surveillance application, we may want to correlate cell phone traffic with email traffic. Theoretically unbounded memory is required to processing join over unbounded input streams, since every record in one infinite stream must be compared with every record in the other. Obviously, this is not practical\cite{window-join}. Since the memory of a machine is limited, we need restrict the number of records stored for each stream with a time window. 
 
-A window join takes two key-value pair streams, say stream \textit{S1} and stream \textit{S2}, along with windows with the same slide size for both \textit{S1} and \textit{S2} as input. Each record in \textit{S1} is a tuple of pair \texttt{(k, v1)} with \texttt{k} as the primary key. The key in Stream \textit{S2:}\texttt{(k, v2)} is a foreign key referencing primary key in \textit{S1}. The output of join operator is a stream of tuple \texttt{(k, v1, v2)}. The operation could be described as a SQL query illustrated in Algorithm~\ref{alg:join_query}. Assuming a sliding window join between stream \textit{S1} and stream \textit{S2}, a new tuple arrival from stream \textit{S1}, then a summary of steps to preform join is the following:
+A window join takes two key-value pair streams, say stream \textit{S1} and stream \textit{S2}, along with windows with the same slide size for both \textit{S1} and \textit{S2} as input. Each record in \textit{S1} is a tuple of pair \texttt{(k, v1)} with \texttt{k} as the primary key. The key in Stream \textit{S2:}\texttt{(k, v2)} is a foreign key referencing primary key in \textit{S1}. The output of join operator is a stream of tuple \texttt{(k, v1, v2)}. This primary key join operation could be described as a SQL query illustrated in Algorithm~\ref{alg:join_query}. Assuming a sliding window join between stream \textit{S1} and stream \textit{S2}, a new tuple arrival from stream \textit{S2}, then a summary of steps to preform join is the following:
 
 \begin{algorithm}
 \caption{Join Query}\label{euclid}
@@ -88,13 +88,13 @@ A window join takes two key-value pair streams, say stream \textit{S1} and strea
 \end{algorithm}
 
 \begin{enumerate}
-\item Scan window of stream \textit{S2} to find any tuple which has the same key with this new tuple and propagate the result;
+\item Scan window of stream \textit{S1} to find any tuple which has the same key with this new tuple and propagate the result;
 \item 
 \begin{enumerate}
-\item Insert the new tuple into stream \textit{S1}'s window or
-\item Invalidate target tuple in stream \textit{S2}'s window if found;
+\item Invalidate target tuple in stream \textit{S1}'s window if found ;
+\item If not, insert the new tuple into stream \textit{S2}'s window 
 \end{enumerate}
-\item Invalidate all expired tuples in stream \textit{S1}'s window.
+\item Invalidate all expired tuples in stream \textit{S2}'s window.
 \end{enumerate}
 
 \begin{figure}
@@ -105,9 +105,7 @@ A window join takes two key-value pair streams, say stream \textit{S1} and strea
   \end{center}
 \end{figure}
 
-In step 2, there are two options. In the case of at most one tuple which has the same key with the new tuple could be found in stream \textit{S2}, option (b) is executed. Otherwise, option (a) is performed. Every time new tuple arrives stream \textit{S1}, window of stream \textit{S2} need be scanned. That reduces the performance of join operator, especially when the window is big.
-
-In the first case mentioned above, with a data structure named \texttt{cachedHashTable} there is another way to implement stream join. The tuples in the window of a stream are stored in a cached hash table. Each tuple is cached for window time and expired tuples are invalidated automatically. One of such a \texttt{cachedHashTable} could be found in Guava.\footnote{\url{http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/cache/CacheBuilder.html}} Instead of scanning window of stream \textit{S2}, we could find tuple with the same key in \textit{S2} directly by calling \texttt{cachedHashTable.get(k)}. In theory, this implementation achieves better performance. 
+Every time new tuple arrives stream \textit{S2}, window of stream \textit{S1} need be scanned. That reduces the performance of join operation, especially when the window is big. With a data structure named \texttt{cachedHashTable} there is another way to implement stream join. The tuples in the window of a stream are stored in a cached hash table. Each tuple is cached for window time and expired tuples are invalidated automatically. One of such a \texttt{cachedHashTable} could be found in Guava.\footnote{\url{http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/cache/CacheBuilder.html}} Instead of scanning window of stream \textit{S2}, we could find tuple with the same key in \textit{S2} directly by calling \texttt{cachedHashTable.get(k)}. In theory, this implementation achieves better performance. 
 
 Since Spark Streaming doesn't process tuples in a stream one by one, the join operator in Spark Streaming has different behaviours. In each batch interval, the RDD generated by stream1 will be joined with the RDD generated by stream2. For windowed streams, as long as slide durations of two windowed streams are the same, in each slide duration, the RDDs generated by two windowed streams will be joined. Because of this, window join in Spark Streaming could only make sure that a tuple in one stream will always be joined with corresponding tuple in the other stream that arrived earlier up to a configureable window time. Otherwise, repeat joined tuples would exist in generated RDDs of joined stream. As Figure~\ref{fig:spark_join_norepeat} shown, a tuple in Stream2 could be always joined with a corresponding tuple in Stream1 that arrived up to 2 seconds earlier. Since the slide duration of Stream2 is equal to its window size, no repeat joined tuple exists. On the other hand, it is possible that a tuple arrives earlier from Stream2 than the corresponding tuple in Stream1 couldn't be joined. Figure~\ref{fig:spark_join_repeat} exemplifies that there are tuples joined repeatedly  when slide duration of Stream2 is not equal to its window size.
 
@@ -120,7 +118,7 @@ Since Spark Streaming doesn't process tuples in a stream one by one, the join op
 \end{figure}
 
 
-To evaluate performance of join operator in stream processing systems, we designed a workload called AdvClick which joins two streams in a online advertisement system. Every second there are a huge number of web pages opened which contain advertisement slots. A corresponding stream of shown advertisements is generated in the system and a record in the stream could be simply described as a tuple of \texttt{(id, shown time)}. Some of advertisements would be clicked by users and clicked advertisements is a stream which could be abstracted as a unbound tuples of \texttt{(id, clicked time)}. We assume that a record of advertisement shown always arrivers earlier than corresponding click record. Normally, if an advertisement is attractive to a user, it will be clicked in seconds or a few minutes after shown. We call such a click of an attractive advertisement valid click. To bill a customer, we need count all valid clicks regularly for advertisements of this customer. Which could be counted after joining stream \texttt{advertisement clicks} and stream \texttt{shown advertisements} with a configureable window time. 
+To evaluate performance of join operator in stream processing systems, we designed a workload called AdvClick which joins two streams in a online advertisement system. Every second there are a huge number of web pages opened which contain advertisement slots. A corresponding stream of shown advertisements is generated in the system. Each record in the stream could be simply described as a tuple of \texttt{(id, shown time)}. Some of advertisements would be clicked by users and clicked advertisements is a stream which could be abstracted as a unbounded tuples of \texttt{(id, clicked time)}. Normally, if an advertisement is attractive to a user, the user would click it in a short time after it is shown. We call such a click of an attractive advertisement valid click. To bill a customer, we need count all valid clicks regularly for advertisements of this customer. That could be counted after joining stream \texttt{advertisement clicks} and stream \texttt{shown advertisements}. 
 
 \begin{figure}
   \begin{center}
@@ -133,9 +131,9 @@ To evaluate performance of join operator in stream processing systems, we design
 \subsection{Iterate Operator}
 \label{sub:iterate_operator}
 
-Iterative algorithms occur in many domains of data analysis, such as machine learning or graph analysis. Many stream data processing tasks require iterative sub-computations as well. To achieve these requirements, a data processing system should have the capacity to perform iterative processing on a real-time data stream. To achieve iterative sub-computations,  low-latency interactive access to results and consistent intermediate outputs, \citeauthor{murray2013naiad} introduced a computational model named timely dataflow that is based on a directed graph in which stateful vertices send and receive logically timestamped messages along directed edges. \cite{murray2013naiad} The dataflow graph may contain nested cycles and the timestamps reflect this structure in order to distinguish data that arise in different input epochs and loop iterations. With iterate operator, many stream processing systems already support such nested cycles in processing data flow graph. We designed a workload named StreamKMeans to evaluate iterate operator in stream processing systems.
+Iterative algorithms occur in many domains of data analysis, such as machine learning or graph analysis. Many stream data processing tasks require iterative sub-computations as well. These require a data processing system having the capacity to perform iterative processing on a real-time data stream. To achieve iterative sub-computations,  low-latency interactive access to results and consistent intermediate outputs, \citeauthor{murray2013naiad} introduced a computational model named timely dataflow that is based on a directed graph in which stateful vertices send and receive logically timestamped messages along directed edges \cite{murray2013naiad}. The dataflow graph may contain nested cycles and the timestamps reflect this structure in order to distinguish data that arise in different input epochs and loop iterations. With iterate operator, many stream processing systems already support such nested cycles in processing data flow graph. We designed a workload named stream k-means to evaluate iterate operator in stream processing systems.
 
-KMeans is a clustering algorithm which aims to partition n points into k clusters in which each point belongs to the cluster with the nearest mean, serving as a prototype of the cluster.\cite{kmeans_wiki} Given an initial set of k means, the algorithm proceeds by alternating between two steps: \cite{mackay2003information}
+K-means is a clustering algorithm which aims to partition n points into k clusters in which each point belongs to the cluster with the nearest mean, serving as a prototype of the cluster\cite{kmeans_wiki}. Given an initial set of k means, the algorithm proceeds by alternating between two steps\cite{mackay2003information}:
 \begin{description}
 \item\textbf{Assignment step:} assign each point to the cluster whose mean yields the least within-cluster sum of squares.
 \item \textbf{Update step:} Calculate the new means to be the centroids of the points in the new clusters.
@@ -143,7 +141,7 @@ KMeans is a clustering algorithm which aims to partition n points into k cluster
 
 The algorithm has converged when the assignments no longer change. We apply k-means algorithm on a stream of points with an iterate operator to update centroids.
 
-Compared to clustering for data set, the clustering problem for the data stream domain is difficult because of two issues that are hard to address: (1) The quality of the clusters is poor when the data evolves considerably over time. (2) A data stream clustering algorithm requires much greater functionality in discovering and exploring clusters over different portions of the stream.\cite{aggarwal2003framework} Considering the main purpose of this workload is to evaluate iterative loop in stream data processing, we don't try to solve these issues here. Similarly, stream k-means also has two steps: assignment and update. The difference is each point in the stream only passes the application once and the application doesn't try to buffer points. As shown in Figure~\ref{fig:iterator_operator}, once a new centroid calculated, it will be broadcasted to assignment executors. 
+Compared to clustering for data set, the clustering problem for the data stream domain is difficult because of two issues that are hard to address: (1) The quality of the clusters is poor when the data evolves considerably over time. (2) A data stream clustering algorithm requires much greater functionality in discovering and exploring clusters over different portions of the stream\cite{aggarwal2003framework}. Considering the main purpose of this workload is to evaluate iterative loop in stream data processing, we don't try to solve these issues here. Similarly, stream k-means also has two steps: assignment and update. The difference is each point in the stream only passes the application once and the application doesn't try to buffer points. As shown in Figure~\ref{fig:iterator_operator}, once a new centroid calculated, it will be broadcasted to assignment executors. 
 
  \begin{figure}
   \begin{center}
@@ -157,19 +155,22 @@ Spark executes data analysis pipeline using directed acyclic graph scheduler.  N
 
 \section{Data Generators}
 \label{section:data_generator}
- A data generator is a program that produces and sends unbound records continuously to kafka cluster which are consumed by corresponding workload. For each workload, we designed one or several data generators with some configureable parameters which define the skew in record popularity, the size of records, and the distribution of data etc. These parameters could be changed to evaluate the performance of a system executing one workload on similar data streams with different properties. Users of StreamBench also could implement their own data generators to produce benchmarking data.
+ A data generator is a program that produces and sends unbounded records continuously to kafka cluster which are consumed by corresponding workload. For each workload, we designed one or several data generators with some configureable parameters which define the skew in record popularity, the size of records, and the distribution of data etc. These parameters could be changed to evaluate the performance of a system executing one workload on similar data streams with different properties. Users of StreamBench also could implement their own data generators to produce benchmarking data. Data generators are defined in a submodule of StreamBench project named \textit{generator}. The submodule could be compiled and packaged to get a jar file that could run on any node of our kafka cluster. 
 
 \subsection{WordCount}
 \label{subsection:wordcount_generator}
 
-Generators of workload WordCount produce unbound lists of sentences, each sentence consists of several words. The number of words in each sentence satisfies normal distribution with mean and variance configureable. Each word is a 5-digit zero-padded string of a binary integer, such as ``00001". There are two generators implemented with these integers satisfy two different distribution: uniform distribution and zipfian distribution.
+A data generator of workload WordCount produces unbounded lists of sentences, each sentence consists of several words. In StreamBench, we have implemented two versions of WordCount data generator. Each word in both generators is a 5-digit zero-padded string of a binary integer,  such as ``00001". The number of words in each sentence satisfies normal distribution with mean and sigma configured as \texttt{(10, 1)}. The difference between these two generators is the corresponding integers satisfy two different distributions: uniform distribution and zipfian distribution. Both uniform distribution and zipfian distribution have the same size -- 10000. Exponent of zipfian distribution is configured as 1. 
+
+There are two different ways to run WordCount data generators to cooperate experiments of WordCount discussed in \cref{section:wordcount_experiment}. For Online WordCount, we start data generation after benchmark program and pass a parameter when starting generator to control the generation speed. For Offline model, we could either preload data to kafka cluster or make the generation speed much faster than the throughput of stream processing system executing WordCount workload.
 
 \subsection{AdvClick}
+\label{subsection:advclick_generator}
 
-As discussed in Section~\ref{sub:join_operator}, workload AdvClick joins stream \texttt{shown advertisements} and stream \texttt{advertisement clicks}. Each shown advertisement is a tuple consist of a universally unique identifier(\textbf{UUID}) and a timestamp. Each advertisement has a probability to be clicked. Then the data generator could be a multi-threads application with main thread producing advertisements and sub-threads producing clicks. The pseudocode of the main thread is shown as Algorithm \ref{alg:advclick_generator}. After a sub-thread starts, it sleeps for dalta time and then sends click record to corresponding kafka topic. 
+As discussed in Section~\ref{sub:join_operator}, workload AdvClick performs join operator on two streams: \texttt{shown advertisements} and \texttt{advertisement clicks}. Each record in  \texttt{shown advertisements} is a tuple consist of a universally unique identifier(\textbf{UUID}) and a timestamp. Each advertisement has a probability to be clicked, which is set to 0.3 in our experiments. Then the data generator could be a multi-threads application with main thread producing advertisements and sub-threads generating clicks. The pseudocode of the main thread is shown as Algorithm \ref{alg:advclick_generator}. After a sub-thread starts, it sleeps for delta time and then sends click record to corresponding kafka topic. The probability of advertisements click is a configureable parameter. In our experiments, mean of click delay is set to 10 seconds. 
 
 \begin{algorithm}
-\caption{AdvClick data generator}\label{euclid}
+\caption{AdvClick data generator}
 \label{alg:advclick_generator}
 \begin{algorithmic}[1]
 \State $\text{load } \textit{clickProbability} \text{ from configure file}$
@@ -193,7 +194,7 @@ As discussed in Section~\ref{sub:join_operator}, workload AdvClick joins stream 
 
 \subsection{KMeans}
 
-Stream k-means is a one-pass clustering algorithm for stream data. In this workload, it is used to cluster a unbound stream of points. First, a set of centroids are generated and wrote to a external file. Then the generator produces points according these centroids as Algorithm~\ref{alg:kmeans_generator}.
+Stream k-means is a one-pass clustering algorithm for stream data. In this workload, it is used to cluster a unbounded stream of points. The data generator produces such a stream of points. In order to make experiment results checking easy, we use pre-defined centroids. First, a set of centers are generated and written to a external file. There is a minimum distance between every two centers so that no two clusters are overlapped together. Then the generator produces points according these centers as Algorithm~\ref{alg:kmeans_generator}. The distance of each point to corresponding center satisfies normal distribution with mean and variance as configurable parameters. In our experiments, we found that random initial centroids would lead to results that two groups points cluster to a centroid which is in the middle of two real centers. Which is not desired output to measure the speed of convergence. Therefore, we generate initial centroids for each cluster in the same way as points generation.  
 
 \begin{algorithm}
 \caption{KMeans data generator}\label{euclid}
@@ -215,13 +216,14 @@ Stream k-means is a one-pass clustering algorithm for stream data. In this workl
 \end{algorithmic}
 \end{algorithm}
 
+In our experiment environment, the compute cluster consists of 8 work nodes, each work node has 4 cpu cores. The parallelism of the compute cluster is 32. In order to have a better workload balance, we set the number of centers as 96. The dimension of point is configurable that enables to evaluate whether computation is a bottleneck of this workload.
 
 \section{Experiment Logging and Statistic}
 \label{section:log_statistic}
 
-For evaluating the performance, there are two performance measurement terms used in StreamBench that are latency and throughput. Latency is the required time from a record entering the system to some results produced after some actions performed on the record. In StreamBench, messaging system and stream processing system are combined together and treated as one single system. The latency is computed start from when a record is generated. As discussed in Section \ref{section:data_generator}, data is sent to kafka cluster immediately after generation. Figure~\ref{fig:latency} shows how latency computed in StreamBench. 
+For evaluating the performance, there are two performance measurement terms used in StreamBench that are latency and throughput. Latency is the required time from a record entering the system to some results produced after some actions performed on the record. In StreamBench, messaging system and stream processing system are combined together and treated as one single system. The latency is computed start from when a record is generated. As discussed in Section \ref{section:data_generator}, data is sent to kafka cluster immediately after generation. Figure~\ref{fig:latency} shows how latency computed in StreamBench. In our experiments, we noticed that in the beginning of processing data, the performance of Storm cluster is bad. That leads to high latency of records in the head of a stream. Therefore, we ignored latency logs of first 1 minute in our statistic.
 
-Throughput is the number of actions executed or results produced per unit of time. In the WordCount workload, throughput is computed as the number of words counted per seconds in the whole compute cluster. Joined clicked stream and the number of points processed per second are the throughput of workloads AdvClick and Stream KMeans respectively.
+Throughput is the number of actions executed or results produced per unit of time. In the WordCount workload, throughput is computed as the number of words counted per seconds in the whole compute cluster. Joined click events and the number of points processed per second are the throughput of workloads AdvClick and Stream KMeans respectively.
 
 There is an inherent tradeoff between latency and throughput: on a given hardware setup, as the amount of load increases by increase the speed of data generation, the latency of individual records increases as well since there is more contention for disk, CPU, network, and so on. Computing latency start from records generated makes it easy to measure the highest throughput, since records couldn't produced in time will stay in kafka topics that increase latency dramatically. A stream processing system with better performance will achieve low latency and high throughput with fewer servers.
 
