@@ -129,18 +129,26 @@ Experiment results of stream k-means processing 2-dimensional points shows that 
 \end{figure}
 
 % convance
-Since the throughput of Flink is tens of times higher than Storm, this workload converges much quicker on Flink cluster. In order to compare convergences of the algorithm running on Storm and Flink clusters, we calculated average distance between centroids and corresponding nearest center base on the number of points processed on each compute node and visualized as Figure~\ref{fig:converge}. The results indicate that the k-means algorithm performing on Storm cluster achieves better convergence.
+Since the throughput of Flink is tens of times higher than Storm, this workload converges much quicker on Flink cluster. In order to compare convergences of the algorithm running on Storm and Flink clusters, we calculated average distance between centroids and corresponding nearest center base on the number of points processed on each compute node and visualized as Figure~\ref{fig:converge} \subref{fig:flink_storm}. The results indicate that the k-means algorithm performing on Storm cluster achieves better convergence.
 
-\begin{figure}
+\begin{figure}[t!]
   \begin{center}
-  \subfigure{\includegraphics[scale=0.35]{images/converge}}
-   \caption{Convergence base on processed points }
+   \subfigure[Flink and Storm]{\label{fig:flink_storm}\includegraphics[scale=0.3]{images/converge}}
+  ~
+  \subfigure[Spark Streaming]{\label{fig:spark}\includegraphics[scale=0.3]{images/converge_spark}}
+   \caption{Convergences}
    \label{fig:converge}
   \end{center}
 \end{figure}
 
+
+
 % dimension
 Our experiment results show that increasing point dimension had very limit effect on workload performance, which indicates that computation is a bottleneck of this workload.
 
+Because of Spark's DAG computational model, Spark Streaming doesn't support iterate operator. Instead of forwarding updated centroids in a nested cycle, Spark Streaming implements stream k-means in a different way. It maintains a clustering model and updates the model with each micro batch processed. The update interval of clustering model is the same as micro batch interval. More detail about Spark Streaming K-Means could be found online\footnote{\url{https://databricks.com/blog/2015/01/28/introducing-streaming-k-means-in-spark-1-2.html}}. In our experiment environment, the throughput of cluster could reach 1M/s. With the same benchmark data generator, the convergence of Spark Streaming K-Means is very fast. Figure~\ref{fig:converge} \subref{fig:spark} shows that convergence speed of Spark Streaming with different throughput are very similar. 
+ 
 \clearpage
+
+
 
