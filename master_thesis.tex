@@ -170,8 +170,11 @@
 %\usepackage{supertabular}
 % Longtable provides a tabular environment that can span multiple 
 % pages. This is used in the example acronyms file. 
+\usepackage{tabulary}
 \usepackage{longtable}
 \usepackage{booktabs}
+\usepackage{array}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
 
 % The fancyhdr package allows you to set your the page headers    jskd  
 % manually, and allows you to add separator lines and so on. 
