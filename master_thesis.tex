@@ -326,7 +326,7 @@
 \newcommand{\PROFESSORSHIP}{Foundations of Advanced Computing}
 %\newcommand{\FPROFESSORSHIP}{Tietoliikenneohjelmistot}
 % Professorship code is the same in all languages
-\newcommand{\PROFCODE}{T-119}
+\newcommand{\PROFCODE}{SCI3014}
 \newcommand{\KEYWORDS}{Big Data, Stream, Benchmark, Storm, Flink, Spark}
 %\newcommand{\FKEYWORDS}{AEL, aineistot, aitta, akustiikka, Alankomaat,
 %aluerakentaminen, Anttolanhovi, Arcada, ArchiCad, arkki}
@@ -419,9 +419,9 @@
 % Abstract in English
 % ------------------------------------------------------------------
 \thesisabstract{english}{
-Batch processing technologies (Such as MapReduce, Hive, Pig) have matured and been widely used in the industry. These systems solved the issue processing big volumes of data successfully. However, first big data need to be collected and stored in a database or file system. Then it takes time to finish batch processing analysis jobs before get any results. While there are many cases that need analysed results from unbounded sequence of data in seconds or sub-seconds. To satisfy the increasing demand of processing such stream data, several streaming processing systems are implemented and widely adopted, such as Apache Storm, Apache Spark, IBM InfoSphere Streams and Apache Flink. They all support online stream processing, high scalability, and tasks monitoring. While how to evaluate a stream processing system before choosing it to use in production development is an open question.  
+Batch processing technologies (Such as MapReduce, Hive, Pig) have matured and been widely used in the industry. These systems solved the issue processing big volumes of data successfully. However, first big amount of data need to be collected and stored in a database or file system. That is very time-consuming. Then it takes time to finish batch processing analysis jobs before get any results. While there are many cases that need analysed results from unbounded sequence of data in seconds or sub-seconds. To satisfy the increasing demand of processing such streaming data, several streaming processing systems are implemented and widely adopted, such as Apache Storm, Apache Spark, IBM InfoSphere Streams, and Apache Flink. They all support online stream processing, high scalability, and tasks monitoring. While how to evaluate stream processing systems before choosing one in production development is an open question.  
 
-In this thesis, we introduce StreamBench, a benchmark framework to facilitate performance comparisons of stream processing systems. A common API component and a core set of workloads are defined. We implement the common API and run benchmarks for three widely used open source stream processing systems: Apache Storm, Flink, and Spark Streaming. Therefore, a key feature of the StreamBench framework is that it is extensible -- it supports easy definition of new workloads, in addition to making it easy to benchmark new stream processing systems.
+In this thesis, we introduce StreamBench, a benchmark framework to facilitate performance comparisons of stream processing systems. A common API component and a core set of workloads are defined. We implement the common API and run benchmarks for three widely used open source stream processing systems: Apache Storm, Flink, and Spark Streaming. A key feature of the StreamBench framework is that it is extensible -- it supports easy definition of new workloads, in addition to making it easy to benchmark new stream processing systems.
 
 
 %and benchmark on two of them, Hive and Spark, with BAM data to figure out if they achieved the goal of interactive processing.    
@@ -443,9 +443,9 @@ In this thesis, we introduce StreamBench, a benchmark framework to facilitate pe
 
 I would like to express my gratitude to my supervisor Aristides Gionis for providing me this opportunity and introducing me to the topic. Furthermore I would like to thank my advisor Gianmarco De Francisci Morales for all his guidances and supports.  His guidance helped me in all the time of research and writing of this thesis. I could not have imagined having a better advisor for my master thesis.
 
-Besides my advisors, I would like to thank all my friends in data mining group of Aalto university. Thanks for your advises and helps during my master study. I was a happy time to work with you and I have learnt a lot for you.
+Besides my advisors, I would like to thank all my friends in data mining group of Aalto university. Thanks for your advises and helps during my master study. It was a happy time to work with you and I have learnt a lot from you.
 
-Last but not least, I want thank my parents for trying to support me with the best they can do all these years and all friends for their support and patience.
+Last but not least, I want thank my parents for trying to support me with the best they can do all these years. A lot of thanks to all friends for their support and patience too.
 
 \vskip 10mm
 
